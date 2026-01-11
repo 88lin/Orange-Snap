@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
 import { snapdom } from "@zumer/snapdom";
 import { Copy, Download, Upload } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -52,11 +51,6 @@ export const ImagePreview = ({
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
-      toast({
-        title: "图片已更新 ✨",
-        description: "已重新选择图片进行美化",
-      });
     }
   };
 
@@ -70,18 +64,8 @@ export const ImagePreview = ({
         filename: "beautified-screenshot",
         type: "png"
       });
-
-      toast({
-        title: "下载成功 🎉",
-        description: "美化后的截图已保存",
-      });
     } catch (err) {
       console.error(err);
-      toast({
-        title: "下载失败",
-        description: "请重试或检查图片是否跨域",
-        variant: "destructive"
-      });
     } finally {
       setIsExporting(false);
     }
@@ -98,18 +82,8 @@ export const ImagePreview = ({
       });
 
       await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-
-      toast({
-        title: "复制成功 📋",
-        description: "图片已复制到剪切板",
-      });
     } catch (error) {
       console.error(error);
-      toast({
-        title: "复制失败",
-        description: "暂时无法复制到剪切板",
-        variant: "destructive",
-      });
     } finally {
       setIsExporting(false);
     }
@@ -191,8 +165,9 @@ export const ImagePreview = ({
             )}
             {/* 3D Transform Group (Image + Frame + Shadow) */}
             <div
-              className="relative transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+              className="relative transition-all duration-700"
               style={{
+                transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
                 perspective: `${settings.perspective}px`,
                 transformStyle: 'preserve-3d',
                 transform: `rotateX(${settings.rotateX}deg) rotateY(${settings.rotateY}deg) rotateZ(${settings.rotateZ}deg) skew(${settings.tilt}deg, 0deg)`,

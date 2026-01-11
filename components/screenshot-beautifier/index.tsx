@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "@/hooks/use-toast";
 import { Github } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImagePreview } from "./image-preview";
@@ -25,10 +24,6 @@ export function ScreenshotBeautifier() {
           const img = new Image();
           img.onload = () => setImage(img);
           img.src = URL.createObjectURL(file);
-          toast({
-            title: "图片已添加 ✨",
-            description: "开始美化您的截图吧！",
-          });
         }
         break;
       }
@@ -48,10 +43,6 @@ export function ScreenshotBeautifier() {
         img.onload = () => setImage(img);
         img.src = URL.createObjectURL(file);
         
-        toast({
-          title: "图片已更新 ✨",
-          description: "已重新选择图片进行美化",
-        });
       }
     };
     // 触发点击打开文件对话框

@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import { toast } from "@/hooks/use-toast";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
@@ -48,21 +47,10 @@ export const SettingsPanel = ({
 
   const resetSettings = () => {
     setSettings(defaultSettings);
-    toast({
-      title: "已重置 🔄",
-      description: "所有设置已恢复默认",
-    });
   };
 
   const extractColorsFromImage = async () => {
-    if (!image) {
-      toast({
-        title: "未检测到图片",
-        description: "请先上传一张图片",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!image) return;
 
     setIsExtractingColors(true);
     try {
@@ -86,32 +74,15 @@ export const SettingsPanel = ({
       const colors = await service.extractColors(file);
       
       setAiColors(colors);
-      
-      toast({
-        title: "颜色提取成功 ✨",
-        description: "已从图片中提取主要颜色",
-      });
     } catch (error: any) {
       console.error("Error extracting colors:", error);
-      toast({
-        title: "颜色提取失败",
-        description: error.message || "无法从图片中提取颜色",
-        variant: "destructive",
-      });
     } finally {
       setIsExtractingColors(false);
     }
   };
 
   const extractGradientsFromImage = async () => {
-    if (!image) {
-      toast({
-        title: "未检测到图片",
-        description: "请先上传一张图片",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!image) return;
 
     setIsExtractingGradients(true);
     try {
@@ -135,18 +106,8 @@ export const SettingsPanel = ({
       const gradients = await service.extractGradients(file);
       
       setAiGradients(gradients);
-      
-      toast({
-        title: "渐变提取成功 ✨",
-        description: "已从图片中提取渐变色彩",
-      });
     } catch (error: any) {
       console.error("Error extracting gradients:", error);
-      toast({
-        title: "渐变提取失败",
-        description: error.message || "无法从图片中提取渐变色彩",
-        variant: "destructive",
-      });
     } finally {
       setIsExtractingGradients(false);
     }
