@@ -1,0 +1,27 @@
+{
+  "plugins": ["unicorn"],
+  "categories": {
+    "correctness": "warn",
+    "suspicious": "warn",
+    "perf": "warn",
+    "style": "warn",
+    "restriction": "warn",
+    "unicorn": "warn"
+  },
+  "rules": {
+    "unicorn/no-document-cookie": "off"
+  },
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "ignore": [
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "*.config.js",
+    "*.config.mjs",
+    "next-env.d.ts"
+  ]
+}

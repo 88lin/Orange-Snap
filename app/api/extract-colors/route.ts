@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         try {
             // Try to parse the entire content as JSON first
             colorData = JSON.parse(content);
-        } catch (e) {
+        } catch {
             // If that fails, try to extract JSON using regex
             if (extractionType === 'gradient') {
                 jsonMatch = content.match(/\[\s*\{\s*"start"\s*:\s*"[^"]+"\s*,\s*"end"\s*:\s*"[^"]+"\s*\}(?:\s*,\s*\{\s*"start"\s*:\s*"[^"]+"\s*,\s*"end"\s*:\s*"[^"]+"\s*\})*\s*\]/);

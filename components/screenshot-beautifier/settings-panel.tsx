@@ -1,27 +1,26 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { RotateCcw, Plus, Link, ChevronLeft, ChevronRight, Settings, Loader2 } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "@/hooks/use-toast";
-import {
-  ImageSettings,
-  solidColorPresets,
-  gradientPresets,
-  patternPresets,
-  wallpaperPresets,
-} from "./types";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
+import { ChevronLeft, ChevronRight, Link, Loader2, Plus, RotateCcw, Settings } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+    gradientPresets,
+    ImageSettings,
+    patternPresets,
+    solidColorPresets,
+    wallpaperPresets,
+} from "./types";
 
 interface SettingsPanelProps {
   settings: ImageSettings;
   setSettings: React.Dispatch<React.SetStateAction<ImageSettings>>;
-  wallpaperImage: HTMLImageElement | null;
   setWallpaperImage: React.Dispatch<React.SetStateAction<HTMLImageElement | null>>;
   defaultSettings: ImageSettings;
   image: HTMLImageElement | null;
@@ -30,7 +29,6 @@ interface SettingsPanelProps {
 export const SettingsPanel = ({
   settings,
   setSettings,
-  wallpaperImage,
   setWallpaperImage,
   defaultSettings,
   image,

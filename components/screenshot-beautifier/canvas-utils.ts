@@ -1,4 +1,3 @@
-import { PatternPreset } from "./types";
 
 /**
  * 绘制心形图案
@@ -87,7 +86,6 @@ export const drawBrowserChrome = (
 
     // 控制按钮
     const buttonY = y + 20;
-    const buttonSize = 16;
 
     if (style === "safari") {
         // Safari 样式按钮
@@ -143,7 +141,7 @@ export const drawBrowserChrome = (
     // 地址栏文本
     ctx.fillStyle = "#5f6368";
     ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-    ctx.fillText("https://example.com", addressBarX + 12, addressBarY + 24);
+    ctx.fillText("", addressBarX + 12, addressBarY + 24);
 
     return chromeHeight;
 }; 
