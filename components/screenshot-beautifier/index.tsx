@@ -3,7 +3,6 @@
 import { toast } from "@/hooks/use-toast";
 import { Github } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CanvasRenderer } from "./canvas-renderer";
 import { ImagePreview } from "./image-preview";
 import { PerspectivePanel } from "./perspective-panel";
 import { SettingsPanel } from "./settings-panel";
@@ -12,7 +11,6 @@ import { defaultSettings, ImageSettings } from "./types";
 export function ScreenshotBeautifier() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [settings, setSettings] = useState<ImageSettings>(defaultSettings);
-  const [wallpaperImage, setWallpaperImage] = useState<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // 处理粘贴事件
@@ -67,21 +65,6 @@ export function ScreenshotBeautifier() {
   }, [handlePaste]);
 
   // 监听壁纸URL变更
-  useEffect(() => {
-    if (settings.wallpaperUrl && settings.backgroundType === "wallpaper") {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => setWallpaperImage(img);
-      img.onerror = () => {
-        toast({
-          title: "壁纸加载失败",
-          description: "请检查图片地址是否正确",
-          variant: "destructive",
-        });
-      };
-      img.src = settings.wallpaperUrl;
-    }
-  }, [settings.wallpaperUrl, settings.backgroundType]);
 
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 overflow-hidden flex flex-col">
@@ -136,20 +119,12 @@ export function ScreenshotBeautifier() {
           <SettingsPanel
             settings={settings}
             setSettings={setSettings}
-            setWallpaperImage={setWallpaperImage}
             defaultSettings={defaultSettings}
             image={image}
           />
         </aside>
       </main>
 
-      {/* Hidden Canvas Renderer Logic */}
-      <CanvasRenderer
-        image={image}
-        canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
-        settings={settings}
-        wallpaperImage={wallpaperImage}
-      />
     </div>
   );
 } 

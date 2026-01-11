@@ -10,17 +10,17 @@ import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { Loader2, Plus, RotateCcw } from "lucide-react";
 import { useRef, useState } from "react";
 import {
-  gradientPresets,
-  ImageSettings,
-  patternPresets,
-  solidColorPresets,
-  wallpaperPresets,
+    gradientPresets,
+    ImageSettings,
+    patternPresets,
+    solidColorPresets,
+    wallpaperPresets,
 } from "./types";
 
 interface SettingsPanelProps {
   settings: ImageSettings;
   setSettings: React.Dispatch<React.SetStateAction<ImageSettings>>;
-  setWallpaperImage: React.Dispatch<React.SetStateAction<HTMLImageElement | null>>;
+  setWallpaperImage?: any; // Marked as optional/legacy
   defaultSettings: ImageSettings;
   image: HTMLImageElement | null;
 }
@@ -28,7 +28,6 @@ interface SettingsPanelProps {
 export const SettingsPanel = ({
   settings,
   setSettings,
-  setWallpaperImage,
   defaultSettings,
   image,
 }: SettingsPanelProps) => {
@@ -43,28 +42,12 @@ export const SettingsPanel = ({
     if (file && file.type.startsWith("image/")) {
       const url = URL.createObjectURL(file);
       setSettings((prev) => ({ ...prev, wallpaperUrl: url }));
-      loadWallpaper(url);
     }
-  };
-
-  const loadWallpaper = (url: string) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => setWallpaperImage(img);
-    img.onerror = () => {
-      toast({
-        title: "壁纸加载失败",
-        description: "请检查图片地址是否正确",
-        variant: "destructive",
-      });
-    };
-    img.src = url;
   };
 
 
   const resetSettings = () => {
     setSettings(defaultSettings);
-    setWallpaperImage(null);
     toast({
       title: "已重置 🔄",
       description: "所有设置已恢复默认",
