@@ -182,34 +182,48 @@ export const SettingsPanel = ({
             {/* AI Color Extraction */}
             <div className="space-y-4 pt-4 border-t border-gray-50">
               <div className="flex justify-between items-center">
-                <Label className="text-[10px] font-bold text-gray-400">AI 智能提取色彩</Label>
+                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">AI 智能分析</Label>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={extractColorsFromImage}
                   disabled={isExtractingColors || isAutoExtracting || !image}
-                  className="h-8 px-2 text-xs text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                  className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                 >
-                  {isExtractingColors || isAutoExtracting ? <Loader2 className="h-3 w-3 animate-spin" /> : "重新采样"}
+                  {isExtractingColors || isAutoExtracting ? (
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-2.5 h-2.5" />
+                  )}
+                  重新采样
                 </Button>
               </div>
 
-              <div className="grid grid-cols-5 gap-2.5 min-h-[32px]">
-                {aiColors.length > 0 ? aiColors.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: color }))}
-                    className={`w-full aspect-square rounded-full border-2 transition-all ${
-                      settings.backgroundColor === color ? "border-orange-500 ring-2 ring-orange-500/20" : "border-transparent"
-                    }`}
-                    style={{ backgroundColor: color }}
-                  />
-                )) : (
-                  <div className="col-span-5 text-center py-2 border border-dashed border-gray-100 rounded-lg">
-                     <p className="text-[9px] text-gray-300 uppercase tracking-tighter">暂无 AI 色彩数据</p>
+              {aiColors.length > 0 ? (
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2 px-1">
+                    {aiColors.map((color, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: color }))}
+                        className={`w-5 h-5 rounded-full border border-gray-100 transition-all hover:scale-110 ${
+                          settings.backgroundColor === color ? "ring-2 ring-orange-500/40 border-orange-500" : ""
+                        }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
                   </div>
-                )}
-              </div>
+                  <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
+                    <p className="text-[10px] text-orange-600/70 italic leading-relaxed text-center">
+                      AI 已根据截图光影自动提取色库
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-2 border border-dashed border-gray-100 rounded-lg text-center">
+                   <p className="text-[9px] text-gray-300">正在等待图片分析...</p>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2 pt-2">
@@ -252,32 +266,46 @@ export const SettingsPanel = ({
             {/* AI Gradient Extraction */}
             <div className="space-y-4 pt-4 border-t border-gray-50">
               <div className="flex justify-between items-center">
-                <Label className="text-[10px] font-bold text-gray-400">AI 智能提取渐变</Label>
+                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">AI 智能渐变</Label>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={extractGradientsFromImage}
                   disabled={isExtractingGradients || isAutoExtracting || !image}
-                  className="h-8 px-2 text-xs text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+                  className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                 >
-                  {isExtractingGradients || isAutoExtracting ? <Loader2 className="h-3 w-3 animate-spin" /> : "重新匹配"}
+                  {isExtractingGradients || isAutoExtracting ? (
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-2.5 h-2.5" />
+                  )}
+                  重新匹配
                 </Button>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 min-h-[40px]">
-                {aiGradients.length > 0 ? aiGradients.map((gradient, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSettings((prev) => ({ ...prev, gradientStart: gradient.start, gradientEnd: gradient.end }))}
-                    className="h-10 rounded-lg border border-gray-100 transition-all hover:scale-[1.02]"
-                    style={{ background: `linear-gradient(45deg, ${gradient.start}, ${gradient.end})` }}
-                  />
-                )) : (
-                  <div className="col-span-2 text-center py-4 border border-dashed border-gray-100 rounded-lg">
-                     <p className="text-[9px] text-gray-300 uppercase tracking-tighter">上传截图后可提取渐变</p>
+              {aiGradients.length > 0 ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-2.5 px-1">
+                    {aiGradients.map((gradient, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSettings((prev) => ({ ...prev, gradientStart: gradient.start, gradientEnd: gradient.end }))}
+                        className="h-8 rounded-lg border border-gray-100 transition-all hover:scale-[1.02] shadow-sm"
+                        style={{ background: `linear-gradient(45deg, ${gradient.start}, ${gradient.end})` }}
+                      />
+                    ))}
                   </div>
-                )}
-              </div>
+                  <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
+                    <p className="text-[10px] text-orange-600/70 italic leading-relaxed text-center">
+                      AI 已根据截图氛围推荐最佳色彩过渡
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-2 border border-dashed border-gray-100 rounded-lg text-center">
+                   <p className="text-[9px] text-gray-300">正在等待渐变匹配...</p>
+                </div>
+              )}
             </div>
           </div>
         )}
