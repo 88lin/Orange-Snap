@@ -19,8 +19,8 @@ export interface ImageSettings {
 }
 
 export const defaultSettings: ImageSettings = {
-    borderRadius: 12,
-    padding: 100,
+    borderRadius: 24,
+    padding: 140,
     backgroundColor: "#f0f0f0",
     backgroundType: "solid",
     gradientStart: "#667eea",

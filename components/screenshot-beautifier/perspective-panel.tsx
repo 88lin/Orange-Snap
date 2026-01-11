@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ImageSettings, perspectivePresets } from "./types";
 
 interface PerspectivePanelProps {
@@ -16,61 +14,77 @@ export const PerspectivePanel = ({
   image,
 }: PerspectivePanelProps) => {
   return (
-    <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg h-full overflow-y-auto">
-      <CardContent className="p-4 space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-gray-800">呈现样式</h3>
-        </div>
+    <div className="flex flex-col h-full bg-transparent">
+      <div className="p-6 border-b border-orange-100/30 shrink-0">
+        <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
+          <div className="w-1.5 h-3.5 bg-gradient-to-b from-orange-500 to-amber-500 rounded-full"/>
+          呈现样式
+        </h3>
+        <p className="text-[10px] text-gray-400 mt-1.5">选择最适合的截图展示角度</p>
+      </div>
 
-        {/* Presets */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-3">
-            {perspectivePresets.map((preset, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                className={`text-xs h-20 flex flex-col items-center justify-center gap-2 transition-all ${
-                  settings.rotateX === preset.rotateX &&
-                  settings.rotateY === preset.rotateY &&
-                  settings.rotateZ === preset.rotateZ &&
-                  settings.tilt === preset.tilt
-                    ? "border-orange-400 bg-orange-50 text-orange-600 shadow-inner"
-                    : "hover:border-orange-200 bg-white/50"
-                }`}
-                onClick={() => {
-                  setSettings((prev) => ({
-                    ...prev,
-                    rotateX: preset.rotateX,
-                    rotateY: preset.rotateY,
-                    rotateZ: preset.rotateZ,
-                    tilt: preset.tilt,
-                  }));
-                }}
-              >
-                <div className="relative w-full h-8 flex items-center justify-center overflow-hidden">
-                   <div 
-                    className="w-12 h-7 border-2 border-current rounded-sm opacity-40 bg-current/5"
+      <div className="flex-1 overflow-y-auto p-5 space-y-3 custom-scrollbar">
+        <div className="grid grid-cols-1 gap-2.5">
+          {perspectivePresets.map((preset, index) => (
+            <button
+              key={index}
+              className={`group relative text-left p-3 rounded-xl border transition-all duration-300 ${
+                settings.rotateX === preset.rotateX &&
+                settings.rotateY === preset.rotateY &&
+                settings.rotateZ === preset.rotateZ &&
+                settings.tilt === preset.tilt
+                  ? "border-orange-500 bg-orange-50/30 ring-1 ring-orange-500/10"
+                  : "border-gray-100 hover:border-gray-200 bg-white hover:bg-gray-50/50"
+              }`}
+              onClick={() => {
+                setSettings((prev) => ({
+                  ...prev,
+                  rotateX: preset.rotateX,
+                  rotateY: preset.rotateY,
+                  rotateZ: preset.rotateZ,
+                  tilt: preset.tilt,
+                }));
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-10 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden group-hover:bg-white transition-colors">
+                  <div
+                    className={`w-7 h-4 border-1.5 rounded-[1px] transition-all duration-500 ${
+                      settings.rotateX === preset.rotateX ? "border-orange-500 bg-orange-100/50" : "border-gray-300 bg-gray-100/50"
+                    }`}
                     style={{
                       transformOrigin: "center center",
-                      transform: `perspective(60px) rotateX(${preset.rotateX}deg) rotateY(${preset.rotateY}deg) rotateZ(${preset.rotateZ}deg) skew(${preset.tilt}deg, 0deg)`
+                      transform: `perspective(30px) rotateX(${preset.rotateX}deg) rotateY(${preset.rotateY}deg) rotateZ(${preset.rotateZ}deg) skew(${preset.tilt}deg, 0deg)`
                     }}
                   />
                 </div>
-                <span className="font-medium">{preset.name}</span>
-              </Button>
-            ))}
-          </div>
+                <div>
+                  <div className={`text-xs font-semibold ${settings.rotateX === preset.rotateX ? "text-orange-600" : "text-gray-700"}`}>
+                    {preset.name}
+                  </div>
+                  <div className="text-[9px] text-gray-400 mt-0.5">
+                    {preset.rotateY}° / {preset.rotateX}° / {preset.tilt}°
+                  </div>
+                </div>
+              </div>
+              
+              {settings.rotateX === preset.rotateX && (
+                <div className="absolute top-3 right-3 w-1.5 h-1.5 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.6)]" />
+              )}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {!image && (
-          <div className="bg-orange-50/50 rounded-lg p-3 border border-orange-100">
-            <p className="text-[10px] text-orange-400 text-center leading-relaxed">
-              上传图片后<br/>预览更佳效果
+      {!image && (
+        <div className="p-6 pt-0 shrink-0">
+          <div className="bg-gradient-to-br from-orange-50/50 to-amber-50/50 rounded-2xl p-4 border border-orange-100/50">
+            <p className="text-[10px] text-amber-700/70 font-medium text-center leading-relaxed">
+              💡 建议使用高分辨率原始截图<br/>以获得最佳 3D 渲染质感
             </p>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   );
 };

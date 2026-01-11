@@ -84,69 +84,71 @@ export function ScreenshotBeautifier() {
   }, [settings.wallpaperUrl, settings.backgroundType]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-500 rounded-lg flex items-center justify-center">
-              <img src="favicon.png" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-800">Orange Snap</h1>
-            <a 
-              href="https://github.com/zhiyu1998/Orange-Snap" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="ml-2 text-gray-600 hover:text-gray-900 transition-colors"
-              title="View on GitHub"
-            >
-              <Github size={24} />
-            </a>
+    <div className="h-screen w-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 overflow-hidden flex flex-col">
+      {/* Top Header / Nav */}
+      <header className="h-16 border-b border-orange-100/40 bg-white/60 backdrop-blur-2xl px-8 flex items-center justify-between z-30 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-7 h-7 rounded-md overflow-hidden bg-orange-500">
+            <img src="favicon.png" className="w-full h-full object-contain" alt="logo" />
           </div>
-          <p className="text-gray-600">让截图变得更美 ✨</p>
+          <h1 className="text-lg font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+            Orange Snap
+          </h1>
         </div>
-
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-5 gap-6">
-          {/* Left Side: Perspective Panel */}
-          <div className="lg:col-span-1 border-r border-gray-200 pr-2 hidden lg:block">
-            <PerspectivePanel
-              settings={settings}
-              setSettings={setSettings}
-              image={image}
-            />
-          </div>
-
-          {/* Preview Area (Middle) */}
-          <div className="lg:col-span-3">
-            <ImagePreview
-              image={image}
-              canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
-              onImageSelect={setImage}
-              triggerFileSelection={triggerFileSelection}
-            />
-          </div>
-
-          {/* Right Side: Settings Panel */}
-          <div className="lg:col-span-1 space-y-4">
-            <SettingsPanel
-              settings={settings}
-              setSettings={setSettings}
-              setWallpaperImage={setWallpaperImage}
-              defaultSettings={defaultSettings}
-              image={image}
-            />
-          </div>
+        
+        <div className="flex items-center gap-4">
+          <a
+            href="https://github.com/zhiyu1998/Orange-Snap"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50"
+            title="View on GitHub"
+          >
+            <Github size={20} />
+          </a>
         </div>
+      </header>
 
-        {/* Hidden Canvas Renderer */}
-        <CanvasRenderer
-          image={image}
-          canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
-          settings={settings}
-          wallpaperImage={wallpaperImage}
-        />
-      </div>
+      {/* Main Workspace */}
+      <main className="flex flex-1 overflow-hidden relative">
+        {/* Left Toolbar (Perspective) */}
+        <aside className="w-72 m-4 mr-0 rounded-[32px] border border-orange-100/30 bg-white/60 backdrop-blur-2xl shadow-2xl shadow-orange-900/5 flex flex-col shrink-0 z-20 overflow-hidden">
+          <PerspectivePanel
+            settings={settings}
+            setSettings={setSettings}
+            image={image}
+          />
+        </aside>
+
+        {/* Center Canvas Area (Infinite Workspace) */}
+        <section className="flex-1 relative overflow-auto p-12 flex items-center justify-center custom-scrollbar">
+          <ImagePreview
+            image={image}
+            canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
+            onImageSelect={setImage}
+            triggerFileSelection={triggerFileSelection}
+          />
+        </section>
+
+        {/* Right Inspector (Settings) */}
+        <aside className="w-80 m-4 ml-0 rounded-[32px] border border-orange-100/30 bg-white/60 backdrop-blur-2xl shadow-2xl shadow-orange-900/5 flex flex-col shrink-0 z-20 overflow-y-auto custom-scrollbar overflow-hidden">
+          <SettingsPanel
+            settings={settings}
+            setSettings={setSettings}
+            setWallpaperImage={setWallpaperImage}
+            defaultSettings={defaultSettings}
+            image={image}
+          />
+        </aside>
+      </main>
+
+      {/* Hidden Canvas Renderer Logic */}
+      <CanvasRenderer
+        image={image}
+        canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
+        settings={settings}
+        wallpaperImage={wallpaperImage}
+      />
     </div>
   );
 } 

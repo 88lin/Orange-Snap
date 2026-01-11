@@ -36,7 +36,14 @@ export const CanvasRenderer = ({ image, canvasRef, settings, wallpaperImage }: C
     // 清空画布
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    // 绘制背景
+    // --- 绘制大圆角背景外框 ---
+    const OUTER_RADIUS = 48; // 固定的大圆角
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(0, 0, canvasWidth, canvasHeight, OUTER_RADIUS);
+    ctx.clip();
+
+    // 绘制背景内容
     if (settings.backgroundType === "solid") {
       ctx.fillStyle = settings.backgroundColor;
       ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -61,6 +68,8 @@ export const CanvasRenderer = ({ image, canvasRef, settings, wallpaperImage }: C
 
       ctx.drawImage(wallpaperImage, offsetX, offsetY, scaledWallpaperWidth, scaledWallpaperHeight);
     }
+    
+    ctx.restore();
 
     // 计算图片位置
     const imageX = settings.padding;
@@ -110,7 +119,7 @@ export const CanvasRenderer = ({ image, canvasRef, settings, wallpaperImage }: C
           settings.borderRadius,
         ]);
       } else {
-        ctx.roundRect(imageX, imageY, scaledWidth, scaledHeight, settings.borderRadius);
+        ctx.roundRect(imageX, imageY, scaledWidth, scaledHeight, Math.max(settings.borderRadius, 24));
       }
       ctx.fill();
       ctx.restore();

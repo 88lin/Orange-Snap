@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Upload, Download, Copy } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Copy, Download, Upload } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
 
 interface ImagePreviewProps {
   image: HTMLImageElement | null;
@@ -117,29 +116,34 @@ export const ImagePreview = ({
   return (
     <>
       {!image ? (
-        <Card
-          className={`border-2 border-dashed transition-all duration-300 bg-white/70 backdrop-blur-sm ${
+        <div
+          className={`relative group w-full max-w-2xl border-2 border-dashed rounded-3xl transition-all duration-500 overflow-hidden ${
             isDragging
-              ? "border-orange-400 bg-orange-50/70 scale-105"
-              : "border-gray-300 hover:border-orange-300"
+              ? "border-orange-500 bg-orange-50/50 scale-[1.02]"
+              : "border-gray-200 bg-white/50 hover:border-orange-300 hover:bg-white/80"
           }`}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
           onDragEnter={() => setIsDragging(true)}
           onDragLeave={() => setIsDragging(false)}
         >
-          <CardContent className="flex flex-col items-center justify-center h-96 text-center p-8">
-            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-              <Upload className="w-8 h-8 text-orange-500" />
+          <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-12">
+            <div className="w-20 h-20 bg-orange-100/50 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-100 transition-all duration-500">
+              <Upload className="w-10 h-10 text-orange-500" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">添加截图</h3>
-            <p className="text-gray-500 mb-6">点击这里、粘贴或拖拽图片</p>
+            <h3 className="text-xl font-bold text-gray-800 mb-2">开启您的创作</h3>
+            <p className="text-sm text-gray-400 mb-8 max-w-xs mx-auto leading-relaxed">
+              将截图拖拽到此处，或点击按钮从本地上传，开始一段美妙的视觉之旅
+            </p>
             <Button
               onClick={() => fileInputRef.current?.click()}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 rounded-2xl shadow-lg shadow-orange-500/20 transition-all active:scale-95"
             >
-              选择文件
+              选择本地图片
             </Button>
+            <div className="mt-6 flex items-center gap-2 text-[10px] text-gray-300">
+              <span className="px-1.5 py-0.5 border border-gray-100 rounded">Ctrl</span> + <span className="px-1.5 py-0.5 border border-gray-100 rounded">V</span> 快速粘贴
+            </div>
             <input
               ref={fileInputRef}
               type="file"
@@ -148,60 +152,69 @@ export const ImagePreview = ({
               className="hidden"
               key="file-input"
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ) : (
-        <Card className="bg-white/70 backdrop-blur-sm border-0 shadow-lg">
-          <CardContent className="p-6">
-            {/* Canvas Container with Click Handler */}
-            <div
-              className="flex justify-center mb-4 cursor-pointer"
-              onClick={triggerFileSelection}
-              style={{ position: "relative" }}
-            >
-              <canvas
-                ref={canvasRef}
-                className="max-w-full h-auto rounded-lg"
-                style={{ maxHeight: "500px" }}
-              />
-              <div
-                className="absolute inset-0 hover:bg-black/10 rounded-lg transition-colors"
-                title="点击重新选择图片"
-              />
+        <div className="relative group w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-500">
+          {/* Canvas Container */}
+          <div
+            className="relative p-8 mb-24 transition-transform duration-500 hover:scale-[1.01] cursor-pointer group/canvas"
+            onClick={triggerFileSelection}
+            title="点击更换图片"
+          >
+            <canvas
+              ref={canvasRef}
+              className="max-w-full h-auto drop-shadow-2xl transition-all duration-500 group-hover/canvas:brightness-[0.98]"
+              style={{ maxHeight: "80vh" }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-500 pointer-events-none">
+              <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-2 flex items-center gap-2 shadow-xl shadow-black/5 scale-90 group-hover/canvas:scale-100 transition-transform duration-500">
+                <Upload className="w-4 h-4 text-white drop-shadow-sm" />
+                <span className="text-xs font-bold text-white drop-shadow-sm uppercase tracking-wider">更换图片</span>
+              </div>
             </div>
+          </div>
 
-            <div className="flex justify-center gap-3">
+          {/* Floating Control Bar */}
+          <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50">
+            <div className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-3xl p-2 flex items-center gap-2 ring-1 ring-black/5 animate-in slide-in-from-bottom-10 duration-700">
               <Button
-                variant="outline"
-                size="sm"
+                variant="ghost"
+                size="lg"
                 onClick={copyToClipboard}
-                className="bg-white/80 hover:bg-white transition-colors"
+                className="hover:bg-orange-50 hover:text-orange-600 text-gray-600 font-medium px-6 h-12 rounded-2xl flex items-center gap-2 transition-all active:scale-95"
                 data-copy-button="true"
               >
-                <Copy className="w-4 h-4 mr-2" />
-                复制
+                <Copy className="w-4 h-4" />
+                <span>复制图片</span>
               </Button>
+              
+              <div className="w-[1px] h-6 bg-gray-100 mx-1" />
+
               <Button
-                variant="outline"
-                size="sm"
+                variant="default"
+                size="lg"
                 onClick={downloadImage}
-                className="bg-white/80 hover:bg-white"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-medium px-8 h-12 rounded-2xl shadow-lg shadow-orange-500/20 flex items-center gap-2 transition-all active:scale-95"
               >
-                <Download className="w-4 h-4 mr-2" />
-                下载
+                <Download className="w-4 h-4" />
+                <span>下载截图</span>
               </Button>
+
+              <div className="w-[1px] h-6 bg-gray-100 mx-1" />
+
               <Button
-                variant="outline"
-                size="sm"
+                variant="ghost"
+                size="icon"
                 onClick={triggerFileSelection}
-                className="bg-white/80 hover:bg-white"
+                className="h-12 w-12 rounded-2xl text-gray-400 hover:text-orange-500 hover:bg-orange-50 transition-all active:scale-95"
+                title="重新选择"
               >
-                <Upload className="w-4 h-4 mr-2" />
-                重新选择
+                <Upload className="w-4 h-4" />
               </Button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </>
   );
