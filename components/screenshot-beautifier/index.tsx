@@ -2,6 +2,7 @@
 
 import { Github } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { ImagePreview } from "./image-preview";
 import { PerspectivePanel } from "./perspective-panel";
 import { SettingsPanel } from "./settings-panel";
@@ -10,6 +11,9 @@ import { defaultSettings, ImageSettings } from "./types";
 export function ScreenshotBeautifier() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [settings, setSettings] = useState<ImageSettings>(defaultSettings);
+  const [aiColors, setAiColors] = useState<string[]>([]);
+  const [aiGradients, setAiGradients] = useState<Array<{ start: string; end: string }>>([]);
+  const [isAutoExtracting, setIsAutoExtracting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // 处理粘贴事件
@@ -55,7 +59,51 @@ export function ScreenshotBeautifier() {
     return () => document.removeEventListener("paste", handlePaste);
   }, [handlePaste]);
 
-  // 监听壁纸URL变更
+  // Handle auto-AI extraction on image change
+  useEffect(() => {
+    const autoExtract = async () => {
+      if (!image) return;
+      setIsAutoExtracting(true);
+      
+      const service = new ColorExtractionService();
+      
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(image, 0, 0);
+        
+        const blob = await new Promise<Blob>((resolve) =>
+          canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.8)
+        );
+        const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+        
+        const [colors, gradients] = await Promise.all([
+          service.extractColors(file),
+          service.extractGradients(file)
+        ]);
+        
+        setAiColors(colors);
+        setAiGradients(gradients);
+
+        // Auto-populate backgrounds if they are matching defaults or empty
+        setSettings(prev => ({
+            ...prev,
+            backgroundColor: colors[0] || prev.backgroundColor,
+            gradientStart: gradients[0]?.start || prev.gradientStart,
+            gradientEnd: gradients[0]?.end || prev.gradientEnd,
+            meshColors: colors.slice(0, 5)
+        }));
+      } catch (err) {
+        console.warn("Auto-extraction failed (Key might be missing):", err);
+      } finally {
+        setIsAutoExtracting(false);
+      }
+    };
+
+    autoExtract();
+  }, [image]);
 
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 overflow-hidden flex flex-col">
@@ -112,6 +160,11 @@ export function ScreenshotBeautifier() {
             setSettings={setSettings}
             defaultSettings={defaultSettings}
             image={image}
+            aiColors={aiColors}
+            setAiColors={setAiColors}
+            aiGradients={aiGradients}
+            setAiGradients={setAiGradients}
+            isAutoExtracting={isAutoExtracting}
           />
         </aside>
       </main>

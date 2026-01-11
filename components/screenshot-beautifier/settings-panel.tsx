@@ -22,6 +22,11 @@ interface SettingsPanelProps {
   setWallpaperImage?: any; // Marked as optional/legacy
   defaultSettings: ImageSettings;
   image: HTMLImageElement | null;
+  aiColors: string[];
+  setAiColors: (colors: string[]) => void;
+  aiGradients: Array<{ start: string; end: string }>;
+  setAiGradients: (gradients: Array<{ start: string; end: string }>) => void;
+  isAutoExtracting: boolean;
 }
 
 export const SettingsPanel = ({
@@ -29,11 +34,14 @@ export const SettingsPanel = ({
   setSettings,
   defaultSettings,
   image,
+  aiColors,
+  setAiColors,
+  aiGradients,
+  setAiGradients,
+  isAutoExtracting,
 }: SettingsPanelProps) => {
   const wallpaperInputRef = useRef<HTMLInputElement>(null);
   const [isExtractingColors, setIsExtractingColors] = useState(false);
-  const [aiColors, setAiColors] = useState<string[]>([]);
-  const [aiGradients, setAiGradients] = useState<Array<{ start: string; end: string }>>([]);
   const [isExtractingGradients, setIsExtractingGradients] = useState(false);
 
   const handleWallpaperUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,10 +187,10 @@ export const SettingsPanel = ({
                   variant="ghost"
                   size="sm"
                   onClick={extractColorsFromImage}
-                  disabled={isExtractingColors || !image}
+                  disabled={isExtractingColors || isAutoExtracting || !image}
                   className="h-8 px-2 text-xs text-orange-500 hover:text-orange-600 hover:bg-orange-50"
                 >
-                  {isExtractingColors ? <Loader2 className="h-3 w-3 animate-spin" /> : "开始提取"}
+                  {isExtractingColors || isAutoExtracting ? <Loader2 className="h-3 w-3 animate-spin" /> : "重新采样"}
                 </Button>
               </div>
 
@@ -249,10 +257,10 @@ export const SettingsPanel = ({
                   variant="ghost"
                   size="sm"
                   onClick={extractGradientsFromImage}
-                  disabled={isExtractingGradients || !image}
+                  disabled={isExtractingGradients || isAutoExtracting || !image}
                   className="h-8 px-2 text-xs text-orange-500 hover:text-orange-600 hover:bg-orange-50"
                 >
-                  {isExtractingGradients ? <Loader2 className="h-3 w-3 animate-spin" /> : "智能匹配"}
+                  {isExtractingGradients || isAutoExtracting ? <Loader2 className="h-3 w-3 animate-spin" /> : "重新匹配"}
                 </Button>
               </div>
 
@@ -284,12 +292,11 @@ export const SettingsPanel = ({
                         size="sm"
                         onClick={async () => {
                             await extractColorsFromImage();
-                            // Handle logic locally or via an effect to sync aiColors to meshColors
                         }}
-                        disabled={isExtractingColors || !image}
+                        disabled={isExtractingColors || isAutoExtracting || !image}
                         className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                     >
-                        <Sparkles className="w-3 h-3" />
+                        {isExtractingColors || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                         AI 提取
                     </Button>
                     <Button
