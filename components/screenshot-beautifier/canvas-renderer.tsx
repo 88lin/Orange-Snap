@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
+import { drawBrowserChrome, drawPattern } from "./canvas-utils";
 import { ImageSettings, patternPresets } from "./types";
-import { drawPattern, drawBrowserChrome } from "./canvas-utils";
 
 interface CanvasRendererProps {
   image: HTMLImageElement | null;
@@ -66,6 +66,32 @@ export const CanvasRenderer = ({ image, canvasRef, settings, wallpaperImage }: C
     const imageX = settings.padding;
     const imageY = settings.padding + chromeHeight;
 
+    // --- 应用 3D 变换 (对阴影、Chrome 和图片整体应用) ---
+    ctx.save();
+    
+    // 计算中心点用于旋转
+    const centerX = imageX + scaledWidth / 2;
+    const centerY = imageY + (scaledHeight + chromeHeight) / 2 - chromeHeight / 2;
+    ctx.translate(centerX, centerY);
+    
+    // 模拟倾斜 (Skew)
+    if (settings.tilt !== 0) {
+      ctx.transform(1, 0, Math.tan(settings.tilt * Math.PI / 180), 1, 0, 0);
+    }
+    
+    // 应用 Z 轴旋转
+    if (settings.rotateZ !== 0) {
+      ctx.rotate(settings.rotateZ * Math.PI / 180);
+    }
+
+    // 模拟 X/Y 旋转产生的缩放
+    const scaleX = Math.cos(settings.rotateY * Math.PI / 180);
+    const scaleY = Math.cos(settings.rotateX * Math.PI / 180);
+    ctx.scale(scaleX, scaleY);
+    
+    // 移回原点
+    ctx.translate(-centerX, -centerY);
+
     // 绘制阴影
     if (settings.shadow > 0) {
       ctx.save();
@@ -74,11 +100,9 @@ export const CanvasRenderer = ({ image, canvasRef, settings, wallpaperImage }: C
       ctx.shadowOffsetX = 0;
       ctx.shadowOffsetY = settings.shadow / 4;
 
-      // 创建一个临时路径用于阴影
       ctx.fillStyle = "#000000";
       ctx.beginPath();
       if (settings.browserStyle !== "none") {
-        // 浏览器样式的阴影
         ctx.roundRect(imageX, imageY - chromeHeight, scaledWidth, scaledHeight + chromeHeight, [
           settings.borderRadius,
           settings.borderRadius,
@@ -115,6 +139,9 @@ export const CanvasRenderer = ({ image, canvasRef, settings, wallpaperImage }: C
     }
     ctx.clip();
     ctx.drawImage(image, imageX, imageY, scaledWidth, scaledHeight);
+    ctx.restore();
+    
+    // 结束 3D 变换
     ctx.restore();
   }, [image, settings, wallpaperImage]);
 

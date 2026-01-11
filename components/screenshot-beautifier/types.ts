@@ -10,6 +10,12 @@ export interface ImageSettings {
     shadow: number
     shadowColor: string
     wallpaperUrl: string
+    // Perspective settings
+    rotateX: number
+    rotateY: number
+    rotateZ: number
+    perspective: number
+    tilt: number
 }
 
 export const defaultSettings: ImageSettings = {
@@ -24,6 +30,11 @@ export const defaultSettings: ImageSettings = {
     shadow: 20,
     shadowColor: "#00000060",
     wallpaperUrl: "",
+    rotateX: 0,
+    rotateY: 0,
+    rotateZ: 0,
+    perspective: 1000,
+    tilt: 0,
 }
 
 export interface GradientPreset {
@@ -48,6 +59,27 @@ export interface WallpaperPreset {
     url: string
     thumbnail: string
 }
+
+export interface PerspectivePreset {
+    name: string
+    rotateX: number
+    rotateY: number
+    rotateZ: number
+    tilt: number
+}
+
+export const perspectivePresets: PerspectivePreset[] = [
+    { name: "无", rotateX: 0, rotateY: 0, rotateZ: 0, tilt: 0 },
+    { name: "左倾侧", rotateX: 10, rotateY: -20, rotateZ: 5, tilt: -15 },
+    { name: "右倾侧", rotateX: 10, rotateY: 20, rotateZ: -5, tilt: 15 },
+    { name: "俯视", rotateX: 25, rotateY: 0, rotateZ: 0, tilt: 0 },
+    { name: "立体", rotateX: 15, rotateY: -15, rotateZ: 0, tilt: -10 },
+    { name: "斜塔", rotateX: 5, rotateY: 5, rotateZ: 30, tilt: 0 },
+    { name: "宽屏纵深", rotateX: 0, rotateY: -35, rotateZ: 0, tilt: -20 },
+    { name: "书籍感", rotateX: 0, rotateY: 35, rotateZ: 0, tilt: 20 },
+    { name: "极客风", rotateX: -20, rotateY: -20, rotateZ: 5, tilt: 0 },
+    { name: "跃动", rotateX: 10, rotateY: 10, rotateZ: -15, tilt: 5 },
+]
 
 export const gradientPresets: GradientPreset[] = [
     { name: "蓝紫", start: "#667eea", end: "#764ba2" },

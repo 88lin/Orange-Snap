@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
-import { Github } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { defaultSettings, ImageSettings } from "./types";
-import { ImagePreview } from "./image-preview";
-import { SettingsPanel } from "./settings-panel";
+import { Github } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CanvasRenderer } from "./canvas-renderer";
+import { ImagePreview } from "./image-preview";
+import { PerspectivePanel } from "./perspective-panel";
+import { SettingsPanel } from "./settings-panel";
+import { defaultSettings, ImageSettings } from "./types";
 
 export function ScreenshotBeautifier() {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
@@ -106,8 +107,17 @@ export function ScreenshotBeautifier() {
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-4 gap-6">
-          {/* Preview Area */}
+        <div className="grid lg:grid-cols-5 gap-6">
+          {/* Left Side: Perspective Panel */}
+          <div className="lg:col-span-1 border-r border-gray-200 pr-2 hidden lg:block">
+            <PerspectivePanel
+              settings={settings}
+              setSettings={setSettings}
+              image={image}
+            />
+          </div>
+
+          {/* Preview Area (Middle) */}
           <div className="lg:col-span-3">
             <ImagePreview
               image={image}
@@ -117,12 +127,11 @@ export function ScreenshotBeautifier() {
             />
           </div>
 
-          {/* Controls */}
-          <div className="space-y-4">
+          {/* Right Side: Settings Panel */}
+          <div className="lg:col-span-1 space-y-4">
             <SettingsPanel
               settings={settings}
               setSettings={setSettings}
-              wallpaperImage={wallpaperImage}
               setWallpaperImage={setWallpaperImage}
               defaultSettings={defaultSettings}
               image={image}
