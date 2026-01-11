@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { snapdom } from "@zumer/snapdom";
 import { Copy, Download, Upload } from "lucide-react";
 import { toast } from "sonner";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ImageSettings } from "./types";
 import { MeshBackground } from "./mesh-background";
 
@@ -93,6 +93,20 @@ export const ImagePreview = ({
       setIsExporting(false);
     }
   };
+
+  // Keyboard listener for Ctrl+C
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+        if (image && !isExporting) {
+          copyToClipboard();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [image, isExporting, copyToClipboard]);
 
   // Helper for background style
   const backgroundStyle = useMemo(() => {

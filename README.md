@@ -1,20 +1,27 @@
-# Orange-Snap
+# Orange-Snap 0.2.0
 
-简洁实用的截图美化工具，让截图变得更美✨
+简洁、高级、专业的截图美化工作室，让你的截图瞬间拥有电影感 ✨
+
+Orange-Snap 已经从一个基础工具进化为了全屏工作台级的设计器，支持 3D 透视变换与 AI 智能配色，实现 100% 的“所见即所得”效果。
 
 ![](./images/image.png)
+![](./images/image2.png)
 
 ## ✨ 特点
 
-Orange Snap 是一款简洁而强大的截图美化工具，具有以下特点：
+Orange-Snap v2 带来了跨代级的提升：
 
-- 🎨 **多样化背景选项**：纯色、渐变色、图案和自定义壁纸
-- 🤖 **AI 颜色提取**：自动从图片中提取主色调和渐变色彩
-- 🖼️ **浏览器样式模拟**：支持 Chrome 和 Safari 样式的浏览器窗口
-- 📏 **灵活的样式调整**：自定义圆角、内边距、缩放比例和阴影效果
-- 📋 **便捷操作**：支持拖放上传、粘贴图片、一键复制和下载
-- 🔄 **快速切换**：点击图片即可重新选择截图
-- 🎯 **简洁界面**：直观易用的用户界面，操作简单
+- 🎨 **高级弥散渐变 (Mesh Gradient)**：内置动态色彩气泡与电影级噪点纹理，轻松复刻顶级设计风格。
+- 🪄 **3D 视角转换**：内置 10 种极致 3D 呈现预设（等距、倾斜、立体等），采用原生 CSS 3D 驱动，比例守恒不失真。
+- 🤖 **AI 自动智能提取**：
+  - **上传即提取**：文件选定瞬间自动分析主色调与渐变配色。
+  - **持久化建议**：提取结果全程保存，支持一键应用到纯色、渐变或弥散背景。
+- 🖼️ **旗舰渲染引擎 (SnapDOM)**：
+  - **100% 还原**：预览看到的，就是导出的。彻底解决 Canvas 模拟失真问题。
+  - **精细导出**：支持 2x 采样高保真下载与剪切板复制。
+- 📏 **空间感设计**：支持高达 **400px** 的超级内边距，配合 **48px 全局大圆角**，大方且高级。
+- 📋 **高效率操作**：支持拖放、粘贴、快捷键 (**Ctrl+C / Cmd+C**) 以及实时通知反馈。
+- 🎯 **工作室布局**：全屏 Workbench 布局，沉浸式设计体验。
 
 ## 🔧 环境变量配置
 
@@ -23,27 +30,32 @@ Orange Snap 是一款简洁而强大的截图美化工具，具有以下特点�
 1. 在项目根目录创建 `.env.local` 文件
 2. 添加以下配置：
 
-```
-# OpenAI Configuration
+```env
+# OpenAI/Gemini Configuration
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
 AI_MODEL=gemini-2.0-flash
 ```
 
 注意：
-- `OPENAI_API_KEY` 是必需的，用于访问 OpenAI API
-- `OPENAI_BASE_URL` 是可选的，仅在需要使用自定义 API 端点时设置
-- `AI_MODEL` 是可选的，用于指定使用的 AI 模型，默认为 'gemini-2.0-flash'，可选值包括 'gpt-4-vision-preview' 等
+- `OPENAI_API_KEY` 是必需的，用于访问 Vision API。
+- `AI_MODEL` 默认为 `gemini-2.0-flash`。
 
-## 🚀 开发
+## 🚀 极致性能
+
+项目已全面迁移至 **VoidZero** 工具链：
+- **Linter**: 使用 [Oxlint](https://oxlint.rs) 替代 ESLint，代码检查提速 100 倍。
+- **Framework**: 构建于 [Next.js 15.5.9](https://nextjs.org) 尖端版本。
+
+## 🏗️ 快速开始
 
 ```bash
+# 安装依赖
+pnpm install
+
+# 启动开发服务器
 pnpm run dev
-```
 
-## 🏗️ 构建
-
-```bash
+# 构建生产版本
 pnpm run build
 pnpm start
-```
