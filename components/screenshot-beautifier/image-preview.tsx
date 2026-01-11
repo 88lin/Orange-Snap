@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { snapdom } from "@zumer/snapdom";
 import { Copy, Download, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ImageSettings } from "./types";
 import { MeshBackground } from "./mesh-background";
@@ -64,8 +65,10 @@ export const ImagePreview = ({
         filename: "beautified-screenshot",
         type: "png"
       });
+      toast.success("下载成功 🎉");
     } catch (err) {
       console.error(err);
+      toast.error("下载失败，请重试");
     } finally {
       setIsExporting(false);
     }
@@ -82,8 +85,10 @@ export const ImagePreview = ({
       });
 
       await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+      toast.success("图片已成功复制到剪切板 📋");
     } catch (error) {
       console.error(error);
+      toast.error("复制失败，请尝试直接下载");
     } finally {
       setIsExporting(false);
     }
