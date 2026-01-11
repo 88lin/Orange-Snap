@@ -5,11 +5,14 @@ import { toast } from "@/hooks/use-toast";
 import { Copy, Download, Upload } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 
+import { ImageSettings } from "./types";
+
 interface ImagePreviewProps {
   image: HTMLImageElement | null;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   onImageSelect: (img: HTMLImageElement | null) => void;
   triggerFileSelection: () => void;
+  settings: ImageSettings;
 }
 
 export const ImagePreview = ({
@@ -17,6 +20,7 @@ export const ImagePreview = ({
   canvasRef,
   onImageSelect,
   triggerFileSelection,
+  settings,
 }: ImagePreviewProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +64,8 @@ export const ImagePreview = ({
 
     const link = document.createElement("a");
     link.download = "beautified-screenshot.png";
-    link.href = canvasRef.current.toDataURL();
+    // 使用暴露的导出方法
+    link.href = (canvasRef.current as any).exportImage ? (canvasRef.current as any).exportImage() : canvasRef.current.toDataURL();
     link.click();
 
     toast({
@@ -73,15 +78,9 @@ export const ImagePreview = ({
     if (!canvasRef.current) return;
 
     try {
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvasRef.current!.toBlob((blob) => {
-          if (blob) {
-            resolve(blob);
-          } else {
-            reject(new Error("无法创建图片Blob"));
-          }
-        }, "image/png");
-      });
+      const dataUrl = (canvasRef.current as any).exportImage ? (canvasRef.current as any).exportImage() : canvasRef.current.toDataURL();
+      const response = await fetch(dataUrl);
+      const blob = await response.blob();
 
       await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
 
@@ -156,19 +155,57 @@ export const ImagePreview = ({
         </div>
       ) : (
         <div className="relative group w-full h-full flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-500">
-          {/* Canvas Container */}
+          {/* Main Background Shell (Stable) */}
           <div
-            className="relative p-8 mb-24 transition-transform duration-500 hover:scale-[1.01] cursor-pointer group/canvas"
+            className="relative group/workspace mb-24 cursor-pointer"
             onClick={triggerFileSelection}
             title="点击更换图片"
+            style={{
+              width: '80%',
+              aspectRatio: '16/10',
+              padding: `${settings.padding / 4}px`, // 缩放预览区域
+            }}
           >
-            <canvas
-              ref={canvasRef}
-              className="max-w-full h-auto drop-shadow-2xl transition-all duration-500 group-hover/canvas:brightness-[0.98]"
-              style={{ maxHeight: "80vh" }}
+            {/* Stable Rounded Background */}
+            <div
+              className="absolute inset-0 rounded-[48px] shadow-2xl transition-all duration-500"
+              style={{
+                background: settings.backgroundType === "gradient"
+                  ? `linear-gradient(45deg, ${settings.gradientStart}, ${settings.gradientEnd})`
+                  : settings.backgroundType === "wallpaper" && settings.wallpaperUrl
+                  ? `url(${settings.wallpaperUrl}) center/cover`
+                  : settings.backgroundColor,
+                // Pattern is handled in CanvasRenderer, for simplicity we skip it in the stable preview here
+                // but keep the solid color.
+              }}
             />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/canvas:opacity-100 transition-opacity duration-500 pointer-events-none">
-              <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-2 flex items-center gap-2 shadow-xl shadow-black/5 scale-90 group-hover/canvas:scale-100 transition-transform duration-500">
+
+            {/* Dynamic 3D Layer (Only Image/Chrome/Shadow) */}
+            <div
+              className="relative w-full h-full flex items-center justify-center"
+              style={{
+                perspective: `${settings.perspective}px`,
+                perspectiveOrigin: 'center center'
+              }}
+            >
+              <div
+                className="transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+                style={{
+                  transform: `rotateX(${settings.rotateX}deg) rotateY(${settings.rotateY}deg) rotateZ(${settings.rotateZ}deg) skew(${settings.tilt}deg, 0deg)`,
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                <canvas
+                  ref={canvasRef}
+                  className="max-w-full h-auto transition-all duration-500 group-hover/workspace:brightness-[0.98]"
+                  style={{ maxHeight: "70vh" }}
+                />
+              </div>
+            </div>
+
+            {/* Floating Hint */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/workspace:opacity-100 transition-opacity duration-500 pointer-events-none">
+              <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl px-4 py-2 flex items-center gap-2 shadow-xl shadow-black/5 scale-90 group-hover/workspace:scale-100 transition-transform duration-500 z-50">
                 <Upload className="w-4 h-4 text-white drop-shadow-sm" />
                 <span className="text-xs font-bold text-white drop-shadow-sm uppercase tracking-wider">更换图片</span>
               </div>

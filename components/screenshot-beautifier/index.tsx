@@ -127,6 +127,7 @@ export function ScreenshotBeautifier() {
             canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
             onImageSelect={setImage}
             triggerFileSelection={triggerFileSelection}
+            settings={settings}
           />
         </section>
 
