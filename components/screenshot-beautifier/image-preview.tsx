@@ -6,6 +6,7 @@ import { snapdom } from "@zumer/snapdom";
 import { Copy, Download, Upload } from "lucide-react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ImageSettings } from "./types";
+import { MeshBackground } from "./mesh-background";
 
 interface ImagePreviewProps {
   image: HTMLImageElement | null;
@@ -178,9 +179,16 @@ export const ImagePreview = ({
               transition: 'padding 0.5s ease',
               width: 'max-content',
               minWidth: '400px',
-              ...backgroundStyle
+              ...(settings.backgroundType !== 'mesh' ? backgroundStyle : {})
             }}
           >
+            {settings.backgroundType === 'mesh' && (
+              <MeshBackground
+                primaryColor={settings.backgroundColor}
+                additionalColors={settings.meshColors}
+                seed={settings.meshSeed}
+              />
+            )}
             {/* 3D Transform Group (Image + Frame + Shadow) */}
             <div
               className="relative transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"

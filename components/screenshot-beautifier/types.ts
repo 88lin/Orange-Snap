@@ -2,7 +2,7 @@ export interface ImageSettings {
     borderRadius: number
     padding: number
     backgroundColor: string
-    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper"
+    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh"
     gradientStart: string
     gradientEnd: string
     scale: number
@@ -10,6 +10,8 @@ export interface ImageSettings {
     shadow: number
     shadowColor: string
     wallpaperUrl: string
+    meshColors: string[]
+    meshSeed: number
     // Perspective settings
     rotateX: number
     rotateY: number
@@ -30,6 +32,8 @@ export const defaultSettings: ImageSettings = {
     shadow: 30,
     shadowColor: "#00000030",
     wallpaperUrl: "",
+    meshColors: [],
+    meshSeed: 0,
     rotateX: 0,
     rotateY: 0,
     rotateZ: 0,

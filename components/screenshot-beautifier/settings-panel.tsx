@@ -7,14 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { toast } from "@/hooks/use-toast";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
-import { Loader2, Plus, RotateCcw } from "lucide-react";
+import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
 import {
-    gradientPresets,
-    ImageSettings,
-    patternPresets,
-    solidColorPresets,
-    wallpaperPresets,
+  gradientPresets,
+  ImageSettings,
+  patternPresets,
+  solidColorPresets,
+  wallpaperPresets,
 } from "./types";
 
 interface SettingsPanelProps {
@@ -186,6 +186,7 @@ export const SettingsPanel = ({
             <SelectContent>
               <SelectItem value="solid">纯色填充 (Solid)</SelectItem>
               <SelectItem value="gradient">渐变色彩 (Gradient)</SelectItem>
+              <SelectItem value="mesh">弥散渐变 (Mesh Gradient ✨)</SelectItem>
               <SelectItem value="pattern">艺术图案 (Pattern)</SelectItem>
               <SelectItem value="wallpaper">精美壁纸 (Wallpaper)</SelectItem>
             </SelectContent>
@@ -308,6 +309,81 @@ export const SettingsPanel = ({
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {settings.backgroundType === "mesh" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-top-2">
+             <div className="flex justify-between items-center px-1">
+                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">弥散质感</Label>
+                <div className="flex gap-2">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={async () => {
+                            await extractColorsFromImage();
+                            // Handle logic locally or via an effect to sync aiColors to meshColors
+                        }}
+                        disabled={isExtractingColors || !image}
+                        className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
+                    >
+                        <Sparkles className="w-3 h-3" />
+                        AI 提取
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSettings(prev => ({ ...prev, meshSeed: prev.meshSeed + 1 }))}
+                        className="h-6 px-1.5 text-[9px] text-gray-400 hover:bg-gray-100 gap-1"
+                    >
+                        <Dices className="w-3 h-3" />
+                        随机
+                    </Button>
+                </div>
+              </div>
+            
+            <div className="grid grid-cols-5 gap-2.5 min-h-[32px]">
+              {solidColorPresets.map((preset, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: preset.color }))}
+                  className={`w-full aspect-square rounded-full border-2 transition-all hover:scale-110 active:scale-95 ${
+                    settings.backgroundColor === preset.color? "border-orange-500 ring-2 ring-orange-500/20" : "border-transparent"
+                  }`}
+                  style={{ backgroundColor: preset.color }}
+                  title={preset.name}
+                />
+              ))}
+            </div>
+
+            {/* Mesh Specific Colors (AI/Results) */}
+            {aiColors.length > 0 && (
+                <div className="pt-2 border-t border-gray-50">
+                    <p className="text-[9px] text-gray-400 mb-2 px-1">AI 建议色彩库</p>
+                    <div className="flex flex-wrap gap-2">
+                        {aiColors.map((color, i) => (
+                            <div
+                                key={i}
+                                className="w-4 h-4 rounded-full border border-gray-100"
+                                style={{ backgroundColor: color }}
+                            />
+                        ))}
+                        <Button
+                            variant="link"
+                            className="h-4 p-0 text-[9px] text-orange-500"
+                            onClick={() => setSettings(p => ({ ...p, meshColors: aiColors }))}
+                        >
+                            应用到渐变
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            <div className="bg-gradient-to-br from-orange-50/50 to-amber-50/50 p-4 rounded-2xl border border-orange-100/50 flex flex-col items-center gap-2">
+              <p className="text-[10px] text-amber-700/60 font-medium leading-relaxed text-center">
+                磨砂层已叠加 3% 的艺术噪点<br/>以实现电影级的背景平滑度
+              </p>
             </div>
           </div>
         )}
