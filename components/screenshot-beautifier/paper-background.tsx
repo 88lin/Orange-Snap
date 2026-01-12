@@ -1,6 +1,6 @@
 "use client";
 
-import { MeshGradient, DotOrbit } from "@paper-design/shaders-react";
+import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient } from "@paper-design/shaders-react";
 import { ImageSettings } from "./types";
 import { useMemo } from "react";
 
@@ -11,18 +11,20 @@ interface PaperBackgroundProps {
 
 export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) => {
   const colors = useMemo(() => {
-    if (aiColors.length >= 4) return aiColors.slice(0, 4);
+    const targetCount = (settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") ? 5 : 4;
+    if (aiColors.length >= targetCount) return aiColors.slice(0, targetCount);
     if (aiColors.length > 0) {
-      // Pad with existing colors if we have some but less than 4
+      // Pad with existing colors if we have some but less than target
       const padded = [...aiColors];
-      while (padded.length < 4) {
+      while (padded.length < targetCount) {
         padded.push(aiColors[padded.length % aiColors.length]);
       }
       return padded;
     }
     // Default fallback colors
-    return ["#5100ff", "#00ff80", "#ffcc00", "#ea00ff"];
-  }, [aiColors]);
+    const defaults = ["#5100ff", "#00ff80", "#ffcc00", "#ea00ff", "#ffffff"];
+    return defaults.slice(0, targetCount);
+  }, [aiColors, settings.backgroundType]);
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
@@ -41,6 +43,43 @@ export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) =>
           colorBack={settings.shaderColorBack}
           scale={settings.shaderScale}
           speed={settings.shaderSpeed}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+      {settings.backgroundType === "noise" && (
+        <SimplexNoise
+          colors={colors}
+          stepsPerColor={settings.noiseSteps}
+          softness={settings.noiseSoftness}
+          speed={settings.shaderSpeed}
+          scale={settings.shaderScale}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+      {settings.backgroundType === "voronoi" && (
+        <Voronoi
+          colors={colors}
+          colorGlow={settings.voronoiGlowColor}
+          colorGap={settings.voronoiGapColor}
+          stepsPerColor={settings.voronoiSteps}
+          distortion={settings.voronoiDistortion}
+          gap={settings.voronoiGap}
+          glow={settings.voronoiGlow}
+          speed={settings.shaderSpeed}
+          scale={settings.shaderScale}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+      {settings.backgroundType === "grain-gradient" && (
+        <GrainGradient
+          colors={colors}
+          colorBack={settings.shaderColorBack}
+          softness={settings.grainSoftness}
+          intensity={settings.grainIntensity}
+          noise={settings.grainNoise}
+          shape={settings.grainShape}
+          speed={settings.shaderSpeed}
+          scale={settings.shaderScale}
           style={{ width: "100%", height: "100%" }}
         />
       )}

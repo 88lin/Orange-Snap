@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
@@ -114,7 +114,7 @@ export const SettingsPanel = ({
           <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">画布背景</Label>
           <Select
             value={settings.backgroundType}
-            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit") =>
+            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient") =>
               setSettings((prev) => ({ ...prev, backgroundType: value }))
             }
           >
@@ -122,13 +122,25 @@ export const SettingsPanel = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="solid">纯色填充 (Solid)</SelectItem>
-              <SelectItem value="gradient">渐变色彩 (Gradient)</SelectItem>
-              <SelectItem value="mesh">弥散渐变 (Mesh Gradient ✨)</SelectItem>
-              <SelectItem value="paper-mesh">智能弥散 (Paper Mesh 🎨)</SelectItem>
-              <SelectItem value="dot-orbit">灵动圆点 (Dot Orbit 🪐)</SelectItem>
-              <SelectItem value="pattern">艺术图案 (Pattern)</SelectItem>
-              <SelectItem value="wallpaper">精美壁纸 (Wallpaper)</SelectItem>
+              <SelectGroup>
+                <SelectLabel className="text-[10px] text-gray-400">基础背景 (Basic)</SelectLabel>
+                <SelectItem value="solid">纯色填充 (Solid)</SelectItem>
+                <SelectItem value="gradient">渐变色彩 (Gradient)</SelectItem>
+              </SelectGroup>
+              <SelectGroup>
+                <SelectLabel className="text-[10px] text-gray-400">艺术着色器 (Shaders)</SelectLabel>
+                <SelectItem value="mesh">弥散渐变 (Mesh Gradient ✨)</SelectItem>
+                <SelectItem value="paper-mesh">智能弥散 (Paper Mesh 🎨)</SelectItem>
+                <SelectItem value="dot-orbit">灵动圆点 (Dot Orbit 🪐)</SelectItem>
+                <SelectItem value="noise">噪声艺术 (Simplex Noise 🎨)</SelectItem>
+                <SelectItem value="voronoi">泰森多边形 (Voronoi 💎)</SelectItem>
+                <SelectItem value="grain-gradient">颗粒渐变 (Grain Gradient 🌊)</SelectItem>
+              </SelectGroup>
+              <SelectGroup>
+                <SelectLabel className="text-[10px] text-gray-400">装饰背景 (Decorative)</SelectLabel>
+                <SelectItem value="pattern">艺术图案 (Pattern)</SelectItem>
+                <SelectItem value="wallpaper">精美壁纸 (Wallpaper)</SelectItem>
+              </SelectGroup>
             </SelectContent>
           </Select>
         </section>
@@ -281,7 +293,7 @@ export const SettingsPanel = ({
           </div>
         )}
 
-        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit") && (
+        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 text-center">
              <div className="flex justify-between items-center px-1">
                 <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">高级着色器控制</Label>
@@ -345,7 +357,7 @@ export const SettingsPanel = ({
                     </>
                 )}
 
-                {settings.backgroundType === "dot-orbit" && (
+                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") && (
                     <div className="space-y-2">
                         <div className="flex justify-between items-center px-1">
                             <Label className="text-[10px] text-gray-400">比例</Label>
@@ -355,10 +367,125 @@ export const SettingsPanel = ({
                             value={[settings.shaderScale]}
                             onValueChange={([v]) => setSettings(p => ({ ...p, shaderScale: v }))}
                             min={0.1}
-                            max={2}
+                            max={4}
                             step={0.1}
                         />
                     </div>
+                )}
+
+                {settings.backgroundType === "noise" && (
+                    <>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">步数</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.noiseSteps}</span>
+                            </div>
+                            <Slider
+                                value={[settings.noiseSteps]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, noiseSteps: v }))}
+                                min={1}
+                                max={5}
+                                step={1}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">柔化</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.noiseSoftness}</span>
+                            </div>
+                            <Slider
+                                value={[settings.noiseSoftness]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, noiseSoftness: v }))}
+                                min={0}
+                                max={1}
+                                step={0.01}
+                            />
+                        </div>
+                    </>
+                )}
+
+                {settings.backgroundType === "grain-gradient" && (
+                    <>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">形状</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400 uppercase">{settings.grainShape}</span>
+                            </div>
+                            <Select
+                                value={settings.grainShape}
+                                onValueChange={(value: any) => setSettings(p => ({ ...p, grainShape: value }))}
+                            >
+                                <SelectTrigger className="w-full bg-gray-50/50 border-gray-100 h-8 text-[10px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="wave">Wave</SelectItem>
+                                    <SelectItem value="dots">Dots</SelectItem>
+                                    <SelectItem value="truchet">Truchet</SelectItem>
+                                    <SelectItem value="corners">Corners</SelectItem>
+                                    <SelectItem value="ripple">Ripple</SelectItem>
+                                    <SelectItem value="blob">Blob</SelectItem>
+                                    <SelectItem value="sphere">Sphere</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">柔化</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.grainSoftness}</span>
+                            </div>
+                            <Slider
+                                value={[settings.grainSoftness]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, grainSoftness: v }))}
+                                min={0}
+                                max={1}
+                                step={0.01}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">强度</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.grainIntensity}</span>
+                            </div>
+                            <Slider
+                                value={[settings.grainIntensity]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, grainIntensity: v }))}
+                                min={0}
+                                max={1}
+                                step={0.01}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">噪点</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.grainNoise}</span>
+                            </div>
+                            <Slider
+                                value={[settings.grainNoise]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, grainNoise: v }))}
+                                min={0}
+                                max={1}
+                                step={0.01}
+                            />
+                        </div>
+                        <div className="space-y-2 pt-2">
+                            <Label className="text-[10px] text-gray-400">底色 (Background)</Label>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="color"
+                                value={settings.shaderColorBack}
+                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
+                                className="w-8 h-8 p-0 border-none bg-transparent"
+                              />
+                              <Input
+                                type="text"
+                                value={settings.shaderColorBack}
+                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
+                                className="flex-1 h-8 text-[10px] bg-gray-50/50 border-gray-100"
+                              />
+                            </div>
+                        </div>
+                    </>
                 )}
               </div>
 

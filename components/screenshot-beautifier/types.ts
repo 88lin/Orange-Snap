@@ -2,7 +2,7 @@ export interface ImageSettings {
     borderRadius: number
     padding: number
     backgroundColor: string
-    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit"
+    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient"
     gradientStart: string
     gradientEnd: string
     // Paper Shaders settings
@@ -11,6 +11,18 @@ export interface ImageSettings {
     shaderSpeed: number
     shaderScale: number
     shaderColorBack: string
+    noiseSteps: number
+    noiseSoftness: number
+    voronoiGlowColor: string
+    voronoiGapColor: string
+    voronoiSteps: number
+    voronoiDistortion: number
+    voronoiGap: number
+    voronoiGlow: number
+    grainSoftness: number
+    grainIntensity: number
+    grainNoise: number
+    grainShape: "wave" | "dots" | "truchet" | "corners" | "ripple" | "blob" | "sphere"
     scale: number
     browserStyle: "none" | "chrome" | "safari"
     shadow: number
@@ -38,6 +50,18 @@ export const defaultSettings: ImageSettings = {
     shaderSpeed: 0.2,
     shaderScale: 1.0,
     shaderColorBack: "#000000",
+    noiseSteps: 2,
+    noiseSoftness: 0,
+    voronoiGlowColor: "#ffffff",
+    voronoiGapColor: "#2e0000",
+    voronoiSteps: 3,
+    voronoiDistortion: 0.4,
+    voronoiGap: 0.04,
+    voronoiGlow: 0,
+    grainSoftness: 0.5,
+    grainIntensity: 0.5,
+    grainNoise: 0.25,
+    grainShape: "corners",
     scale: 1.0,
     browserStyle: "safari",
     shadow: 30,

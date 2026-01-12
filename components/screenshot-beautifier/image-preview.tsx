@@ -185,7 +185,7 @@ export const ImagePreview = ({
                 seed={settings.meshSeed}
               />
             )}
-            {(settings.backgroundType === 'paper-mesh' || settings.backgroundType === 'dot-orbit') && (
+            {(settings.backgroundType === 'paper-mesh' || settings.backgroundType === 'dot-orbit' || settings.backgroundType === 'noise' || settings.backgroundType === 'voronoi' || settings.backgroundType === 'grain-gradient') && (
               <PaperBackground settings={settings} aiColors={aiColors} />
             )}
             {/* 3D Transform Group (Image + Frame + Shadow) */}
