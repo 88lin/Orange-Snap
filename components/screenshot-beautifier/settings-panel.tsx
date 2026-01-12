@@ -113,7 +113,7 @@ export const SettingsPanel = ({
           <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">画布背景</Label>
           <Select
             value={settings.backgroundType}
-            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh") =>
+            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh" | "smoke-ring") =>
               setSettings((prev) => ({ ...prev, backgroundType: value }))
             }
           >
@@ -136,6 +136,7 @@ export const SettingsPanel = ({
                 <SelectItem value="voronoi">泰森多边形 (Voronoi 💎)</SelectItem>
                 <SelectItem value="grain-gradient">颗粒渐变 (Grain Gradient 🌊)</SelectItem>
                 <SelectItem value="warp">扭曲艺术 (Warp 🌊✨)</SelectItem>
+                <SelectItem value="smoke-ring">烟雾环 (Smoke Ring 💨)</SelectItem>
               </SelectGroup>
               <SelectGroup>
                 <SelectLabel className="text-[10px] text-gray-400">装饰背景 (Decorative)</SelectLabel>
@@ -294,7 +295,7 @@ export const SettingsPanel = ({
           </div>
         )}
 
-        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh") && (
+        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh" || settings.backgroundType === "smoke-ring") && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 text-center">
              <div className="flex justify-between items-center px-1">
                 <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">高级着色器控制</Label>
@@ -371,7 +372,7 @@ export const SettingsPanel = ({
                   </>
                 )}
 
-                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh") && (
+                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh" || settings.backgroundType === "smoke-ring") && (
                     <CompactSlider
                         label="比例"
                         valueDisplay={settings.shaderScale.toFixed(1)}
@@ -381,6 +382,56 @@ export const SettingsPanel = ({
                         max={4}
                         step={0.1}
                     />
+                )}
+
+                {settings.backgroundType === "smoke-ring" && (
+                  <>
+                    <CompactSlider
+                        label="噪声频率"
+                        valueDisplay={settings.smokeNoiseScale.toFixed(2)}
+                        value={[settings.smokeNoiseScale]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeNoiseScale: v }))}
+                        min={0.01}
+                        max={5}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="噪声细节"
+                        valueDisplay={settings.smokeNoiseIterations.toString()}
+                        value={[settings.smokeNoiseIterations]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeNoiseIterations: v }))}
+                        min={1}
+                        max={8}
+                        step={1}
+                    />
+                    <CompactSlider
+                        label="半径"
+                        valueDisplay={settings.smokeRadius.toFixed(2)}
+                        value={[settings.smokeRadius]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeRadius: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="厚度"
+                        valueDisplay={settings.smokeThickness.toFixed(2)}
+                        value={[settings.smokeThickness]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeThickness: v }))}
+                        min={0.01}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="内部填充"
+                        valueDisplay={settings.smokeInnerShape.toFixed(2)}
+                        value={[settings.smokeInnerShape]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeInnerShape: v }))}
+                        min={0}
+                        max={4}
+                        step={0.1}
+                    />
+                  </>
                 )}
 
                 {settings.backgroundType === "static-mesh" && (
@@ -611,7 +662,7 @@ export const SettingsPanel = ({
                     </>
                 )}
 
-                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "grain-gradient") && (
+                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "smoke-ring") && (
                     <div className="space-y-2 pt-2">
                         <Label className="text-[10px] text-gray-400">底色 (Background)</Label>
                         <div className="flex items-center gap-2">

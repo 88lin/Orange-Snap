@@ -185,7 +185,7 @@ export const ImagePreview = ({
                 seed={settings.meshSeed}
               />
             )}
-            {(settings.backgroundType === 'paper-mesh' || settings.backgroundType === 'dot-orbit' || settings.backgroundType === 'noise' || settings.backgroundType === 'voronoi' || settings.backgroundType === 'grain-gradient' || settings.backgroundType === 'warp' || settings.backgroundType === 'static-mesh') && (
+            {(settings.backgroundType === 'paper-mesh' || settings.backgroundType === 'dot-orbit' || settings.backgroundType === 'noise' || settings.backgroundType === 'voronoi' || settings.backgroundType === 'grain-gradient' || settings.backgroundType === 'warp' || settings.backgroundType === 'static-mesh' || settings.backgroundType === 'smoke-ring') && (
               <PaperBackground settings={settings} aiColors={aiColors} />
             )}
             {/* 3D Transform Group (Image + Frame + Shadow) */}

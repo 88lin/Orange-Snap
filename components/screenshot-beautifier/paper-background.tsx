@@ -1,6 +1,6 @@
 "use client";
 
-import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient, Warp, StaticMeshGradient } from "@paper-design/shaders-react";
+import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient, Warp, StaticMeshGradient, SmokeRing } from "@paper-design/shaders-react";
 import { ImageSettings } from "./types";
 import { useMemo } from "react";
 
@@ -112,6 +112,20 @@ export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) =>
           grainMixer={settings.grainMixer}
           grainOverlay={settings.grainOverlay}
           rotation={settings.meshRotation}
+          scale={settings.shaderScale}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+      {settings.backgroundType === "smoke-ring" && (
+        <SmokeRing
+          colors={colors}
+          colorBack={settings.shaderColorBack}
+          noiseScale={settings.smokeNoiseScale}
+          noiseIterations={settings.smokeNoiseIterations}
+          radius={settings.smokeRadius}
+          thickness={settings.smokeThickness}
+          innerShape={settings.smokeInnerShape}
+          speed={settings.shaderSpeed}
           scale={settings.shaderScale}
           style={{ width: "100%", height: "100%" }}
         />

@@ -2,7 +2,7 @@ export interface ImageSettings {
     borderRadius: number
     padding: number
     backgroundColor: string
-    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh"
+    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh" | "smoke-ring"
     gradientStart: string
     gradientEnd: string
     // Paper Shaders settings
@@ -39,6 +39,12 @@ export interface ImageSettings {
     meshWaveYShift: number
     meshMixing: number
     meshRotation: number
+    // Smoke Ring settings
+    smokeNoiseScale: number
+    smokeNoiseIterations: number
+    smokeRadius: number
+    smokeThickness: number
+    smokeInnerShape: number
     scale: number
     browserStyle: "none" | "chrome" | "safari"
     shadow: number
@@ -92,6 +98,11 @@ export const defaultSettings: ImageSettings = {
     meshWaveYShift: 0.21,
     meshMixing: 0.93,
     meshRotation: 270,
+    smokeNoiseScale: 3,
+    smokeNoiseIterations: 8,
+    smokeRadius: 0.25,
+    smokeThickness: 0.65,
+    smokeInnerShape: 0.7,
     scale: 1.0,
     browserStyle: "none",
     shadow: 30,
