@@ -20,6 +20,9 @@ export async function POST(request: NextRequest) {
         const openai = new OpenAI({
             apiKey: apiKey,
             baseURL: baseUrl || undefined,
+            defaultHeaders: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            }
         });
 
         // Get the form data (multipart/form-data)
@@ -104,9 +107,14 @@ export async function POST(request: NextRequest) {
         });
     } catch (error: any) {
         console.error('Error extracting colors:', error);
+
+        // Return a more descriptive error if it's from the AI provider
+        const status = error.status || 500;
+        const message = error.message || 'Failed to extract colors';
+
         return NextResponse.json(
-            { error: error.message || 'Failed to extract colors' },
-            { status: 500 }
+            { error: message, details: error.error || undefined },
+            { status: status }
         );
     }
 } 
