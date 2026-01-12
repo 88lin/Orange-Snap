@@ -2,7 +2,7 @@ export interface ImageSettings {
     borderRadius: number
     padding: number
     backgroundColor: string
-    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp"
+    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh"
     gradientStart: string
     gradientEnd: string
     // Paper Shaders settings
@@ -11,6 +11,8 @@ export interface ImageSettings {
     shaderSpeed: number
     shaderScale: number
     shaderColorBack: string
+    grainMixer: number
+    grainOverlay: number
     noiseSteps: number
     noiseSoftness: number
     voronoiGlowColor: string
@@ -29,6 +31,14 @@ export interface ImageSettings {
     warpSwirlIterations: number
     warpShape: "checks" | "stripes" | "edge"
     warpShapeScale: number
+    // Static Mesh settings
+    meshPositions: number
+    meshWaveX: number
+    meshWaveXShift: number
+    meshWaveY: number
+    meshWaveYShift: number
+    meshMixing: number
+    meshRotation: number
     scale: number
     browserStyle: "none" | "chrome" | "safari"
     shadow: number
@@ -56,6 +66,8 @@ export const defaultSettings: ImageSettings = {
     shaderSpeed: 0.2,
     shaderScale: 1.0,
     shaderColorBack: "#000000",
+    grainMixer: 0,
+    grainOverlay: 0,
     noiseSteps: 2,
     noiseSoftness: 0,
     voronoiGlowColor: "#ffffff",
@@ -73,6 +85,13 @@ export const defaultSettings: ImageSettings = {
     warpSwirlIterations: 10,
     warpShape: "checks",
     warpShapeScale: 0.1,
+    meshPositions: 2,
+    meshWaveX: 1,
+    meshWaveXShift: 0.6,
+    meshWaveY: 1,
+    meshWaveYShift: 0.21,
+    meshMixing: 0.93,
+    meshRotation: 270,
     scale: 1.0,
     browserStyle: "none",
     shadow: 30,

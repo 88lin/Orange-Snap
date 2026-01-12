@@ -113,7 +113,7 @@ export const SettingsPanel = ({
           <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">画布背景</Label>
           <Select
             value={settings.backgroundType}
-            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp") =>
+            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh") =>
               setSettings((prev) => ({ ...prev, backgroundType: value }))
             }
           >
@@ -130,6 +130,7 @@ export const SettingsPanel = ({
                 <SelectLabel className="text-[10px] text-gray-400">艺术着色器 (Shaders)</SelectLabel>
                 <SelectItem value="mesh">弥散渐变 (Mesh Gradient ✨)</SelectItem>
                 <SelectItem value="paper-mesh">智能弥散 (Paper Mesh 🎨)</SelectItem>
+                <SelectItem value="static-mesh">静态弥散 (Static Mesh 🎨)</SelectItem>
                 <SelectItem value="dot-orbit">灵动圆点 (Dot Orbit 🪐)</SelectItem>
                 <SelectItem value="noise">噪声艺术 (Simplex Noise 🎨)</SelectItem>
                 <SelectItem value="voronoi">泰森多边形 (Voronoi 💎)</SelectItem>
@@ -293,7 +294,7 @@ export const SettingsPanel = ({
           </div>
         )}
 
-        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp") && (
+        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh") && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 text-center">
              <div className="flex justify-between items-center px-1">
                 <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">高级着色器控制</Label>
@@ -312,15 +313,17 @@ export const SettingsPanel = ({
               </div>
 
               <div className="space-y-3">
-                <CompactSlider
-                    label="速度"
-                    valueDisplay={settings.shaderSpeed.toFixed(2)}
-                    value={[settings.shaderSpeed]}
-                    onValueChange={([v]) => setSettings(p => ({ ...p, shaderSpeed: v }))}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                />
+                {(settings.backgroundType !== "static-mesh") && (
+                  <CompactSlider
+                      label="速度"
+                      valueDisplay={settings.shaderSpeed.toFixed(2)}
+                      value={[settings.shaderSpeed]}
+                      onValueChange={([v]) => setSettings(p => ({ ...p, shaderSpeed: v }))}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                  />
+                )}
 
                 {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "warp") && (
                     <>
@@ -345,7 +348,30 @@ export const SettingsPanel = ({
                     </>
                 )}
 
-                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp") && (
+                {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "static-mesh") && (
+                  <>
+                    <CompactSlider
+                        label="颗粒混合"
+                        valueDisplay={settings.grainMixer.toFixed(2)}
+                        value={[settings.grainMixer]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, grainMixer: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="颗粒叠加"
+                        valueDisplay={settings.grainOverlay.toFixed(2)}
+                        value={[settings.grainOverlay]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, grainOverlay: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                  </>
+                )}
+
+                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh") && (
                     <CompactSlider
                         label="比例"
                         valueDisplay={settings.shaderScale.toFixed(1)}
@@ -355,6 +381,74 @@ export const SettingsPanel = ({
                         max={4}
                         step={0.1}
                     />
+                )}
+
+                {settings.backgroundType === "static-mesh" && (
+                  <>
+                    <CompactSlider
+                        label="位置"
+                        valueDisplay={settings.meshPositions.toString()}
+                        value={[settings.meshPositions]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshPositions: v }))}
+                        min={0}
+                        max={100}
+                        step={1}
+                    />
+                    <CompactSlider
+                        label="波形 X"
+                        valueDisplay={settings.meshWaveX.toFixed(2)}
+                        value={[settings.meshWaveX]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveX: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="波形 X 偏移"
+                        valueDisplay={settings.meshWaveXShift.toFixed(2)}
+                        value={[settings.meshWaveXShift]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveXShift: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="波形 Y"
+                        valueDisplay={settings.meshWaveY.toFixed(2)}
+                        value={[settings.meshWaveY]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveY: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="波形 Y 偏移"
+                        valueDisplay={settings.meshWaveYShift.toFixed(2)}
+                        value={[settings.meshWaveYShift]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveYShift: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="混合"
+                        valueDisplay={settings.meshMixing.toFixed(2)}
+                        value={[settings.meshMixing]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshMixing: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <CompactSlider
+                        label="旋转"
+                        valueDisplay={settings.meshRotation.toString()}
+                        value={[settings.meshRotation]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, meshRotation: v }))}
+                        min={0}
+                        max={360}
+                        step={1}
+                    />
+                  </>
                 )}
 
                 {settings.backgroundType === "warp" && (

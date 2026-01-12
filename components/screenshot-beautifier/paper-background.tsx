@@ -1,6 +1,6 @@
 "use client";
 
-import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient, Warp } from "@paper-design/shaders-react";
+import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient, Warp, StaticMeshGradient } from "@paper-design/shaders-react";
 import { ImageSettings } from "./types";
 import { useMemo } from "react";
 
@@ -33,6 +33,8 @@ export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) =>
           colors={colors}
           distortion={settings.shaderDistortion}
           swirl={settings.shaderSwirl}
+          grainMixer={settings.grainMixer}
+          grainOverlay={settings.grainOverlay}
           speed={settings.shaderSpeed}
           style={{ width: "100%", height: "100%" }}
         />
@@ -94,6 +96,22 @@ export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) =>
           shape={settings.warpShape}
           shapeScale={settings.warpShapeScale}
           speed={settings.shaderSpeed}
+          scale={settings.shaderScale}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+      {settings.backgroundType === "static-mesh" && (
+        <StaticMeshGradient
+          colors={colors}
+          positions={settings.meshPositions}
+          waveX={settings.meshWaveX}
+          waveXShift={settings.meshWaveXShift}
+          waveY={settings.meshWaveY}
+          waveYShift={settings.meshWaveYShift}
+          mixing={settings.meshMixing}
+          grainMixer={settings.grainMixer}
+          grainOverlay={settings.grainOverlay}
+          rotation={settings.meshRotation}
           scale={settings.shaderScale}
           style={{ width: "100%", height: "100%" }}
         />
