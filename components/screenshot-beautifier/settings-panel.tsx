@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
@@ -311,97 +310,170 @@ export const SettingsPanel = ({
                 </Button>
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                    <div className="flex justify-between items-center px-1">
-                        <Label className="text-[10px] text-gray-400">速度</Label>
-                        <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderSpeed}</span>
-                    </div>
-                    <Slider
-                        value={[settings.shaderSpeed]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, shaderSpeed: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                </div>
+              <div className="space-y-3">
+                <CompactSlider
+                    label="速度"
+                    valueDisplay={settings.shaderSpeed.toFixed(2)}
+                    value={[settings.shaderSpeed]}
+                    onValueChange={([v]) => setSettings(p => ({ ...p, shaderSpeed: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                />
 
                 {settings.backgroundType === "paper-mesh" && (
                     <>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">扭曲</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderDistortion}</span>
-                            </div>
-                            <Slider
-                                value={[settings.shaderDistortion]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, shaderDistortion: v }))}
-                                min={0}
-                                max={2}
-                                step={0.1}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">旋涡</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderSwirl}</span>
-                            </div>
-                            <Slider
-                                value={[settings.shaderSwirl]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, shaderSwirl: v }))}
-                                min={0}
-                                max={2}
-                                step={0.1}
-                            />
-                        </div>
+                        <CompactSlider
+                            label="扭曲"
+                            valueDisplay={settings.shaderDistortion.toFixed(1)}
+                            value={[settings.shaderDistortion]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, shaderDistortion: v }))}
+                            min={0}
+                            max={2}
+                            step={0.1}
+                        />
+                        <CompactSlider
+                            label="旋涡"
+                            valueDisplay={settings.shaderSwirl.toFixed(1)}
+                            value={[settings.shaderSwirl]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, shaderSwirl: v }))}
+                            min={0}
+                            max={2}
+                            step={0.1}
+                        />
                     </>
                 )}
 
                 {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") && (
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center px-1">
-                            <Label className="text-[10px] text-gray-400">比例</Label>
-                            <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderScale}</span>
-                        </div>
-                        <Slider
-                            value={[settings.shaderScale]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, shaderScale: v }))}
-                            min={0.1}
-                            max={4}
-                            step={0.1}
-                        />
-                    </div>
+                    <CompactSlider
+                        label="比例"
+                        valueDisplay={settings.shaderScale.toFixed(1)}
+                        value={[settings.shaderScale]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, shaderScale: v }))}
+                        min={0.1}
+                        max={4}
+                        step={0.1}
+                    />
                 )}
 
                 {settings.backgroundType === "noise" && (
                     <>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">步数</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.noiseSteps}</span>
+                        <CompactSlider
+                            label="步数"
+                            valueDisplay={settings.noiseSteps.toString()}
+                            value={[settings.noiseSteps]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, noiseSteps: v }))}
+                            min={1}
+                            max={5}
+                            step={1}
+                        />
+                        <CompactSlider
+                            label="柔化"
+                            valueDisplay={settings.noiseSoftness.toFixed(2)}
+                            value={[settings.noiseSoftness]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, noiseSoftness: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                    </>
+                )}
+
+                {settings.backgroundType === "voronoi" && (
+                    <>
+                        <CompactSlider
+                            label="步数"
+                            valueDisplay={settings.voronoiSteps.toString()}
+                            value={[settings.voronoiSteps]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiSteps: v }))}
+                            min={1}
+                            max={10}
+                            step={1}
+                        />
+                        <CompactSlider
+                            label="扭曲"
+                            valueDisplay={settings.voronoiDistortion.toFixed(2)}
+                            value={[settings.voronoiDistortion]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiDistortion: v }))}
+                            min={0}
+                            max={2}
+                            step={0.1}
+                        />
+                        <CompactSlider
+                            label="间隙"
+                            valueDisplay={settings.voronoiGap.toFixed(2)}
+                            value={[settings.voronoiGap]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiGap: v }))}
+                            min={0}
+                            max={0.5}
+                            step={0.01}
+                        />
+                        <CompactSlider
+                            label="发光"
+                            valueDisplay={settings.voronoiGlow.toFixed(2)}
+                            value={[settings.voronoiGlow]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiGlow: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                        <div className="grid grid-cols-2 gap-3 pt-2">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] text-gray-400">发光色</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="color"
+                                        value={settings.voronoiGlowColor}
+                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGlowColor: e.target.value }))}
+                                        className="w-6 h-6 p-0 border-none bg-transparent"
+                                    />
+                                    <Input
+                                        type="text"
+                                        value={settings.voronoiGlowColor}
+                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGlowColor: e.target.value }))}
+                                        className="flex-1 h-7 text-[9px] bg-gray-50/50 border-gray-100"
+                                    />
+                                </div>
                             </div>
-                            <Slider
-                                value={[settings.noiseSteps]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, noiseSteps: v }))}
-                                min={1}
-                                max={5}
-                                step={1}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">柔化</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.noiseSoftness}</span>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] text-gray-400">间隙色</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="color"
+                                        value={settings.voronoiGapColor}
+                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGapColor: e.target.value }))}
+                                        className="w-6 h-6 p-0 border-none bg-transparent"
+                                    />
+                                    <Input
+                                        type="text"
+                                        value={settings.voronoiGapColor}
+                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGapColor: e.target.value }))}
+                                        className="flex-1 h-7 text-[9px] bg-gray-50/50 border-gray-100"
+                                    />
+                                </div>
                             </div>
-                            <Slider
-                                value={[settings.noiseSoftness]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, noiseSoftness: v }))}
-                                min={0}
-                                max={1}
-                                step={0.01}
-                            />
                         </div>
                     </>
+                )}
+
+                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "grain-gradient") && (
+                    <div className="space-y-2 pt-2">
+                        <Label className="text-[10px] text-gray-400">底色 (Background)</Label>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="color"
+                                value={settings.shaderColorBack}
+                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
+                                className="w-8 h-8 p-0 border-none bg-transparent"
+                            />
+                            <Input
+                                type="text"
+                                value={settings.shaderColorBack}
+                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
+                                className="flex-1 h-8 text-[10px] bg-gray-50/50 border-gray-100"
+                            />
+                        </div>
+                    </div>
                 )}
 
                 {settings.backgroundType === "grain-gradient" && (
@@ -429,62 +501,33 @@ export const SettingsPanel = ({
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">柔化</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.grainSoftness}</span>
-                            </div>
-                            <Slider
-                                value={[settings.grainSoftness]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, grainSoftness: v }))}
-                                min={0}
-                                max={1}
-                                step={0.01}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">强度</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.grainIntensity}</span>
-                            </div>
-                            <Slider
-                                value={[settings.grainIntensity]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, grainIntensity: v }))}
-                                min={0}
-                                max={1}
-                                step={0.01}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">噪点</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400">{settings.grainNoise}</span>
-                            </div>
-                            <Slider
-                                value={[settings.grainNoise]}
-                                onValueChange={([v]) => setSettings(p => ({ ...p, grainNoise: v }))}
-                                min={0}
-                                max={1}
-                                step={0.01}
-                            />
-                        </div>
-                        <div className="space-y-2 pt-2">
-                            <Label className="text-[10px] text-gray-400">底色 (Background)</Label>
-                            <div className="flex items-center gap-2">
-                              <Input
-                                type="color"
-                                value={settings.shaderColorBack}
-                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
-                                className="w-8 h-8 p-0 border-none bg-transparent"
-                              />
-                              <Input
-                                type="text"
-                                value={settings.shaderColorBack}
-                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
-                                className="flex-1 h-8 text-[10px] bg-gray-50/50 border-gray-100"
-                              />
-                            </div>
-                        </div>
+                        <CompactSlider
+                            label="柔化"
+                            valueDisplay={settings.grainSoftness.toFixed(2)}
+                            value={[settings.grainSoftness]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, grainSoftness: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                        <CompactSlider
+                            label="强度"
+                            valueDisplay={settings.grainIntensity.toFixed(2)}
+                            value={[settings.grainIntensity]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, grainIntensity: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                        <CompactSlider
+                            label="噪点"
+                            valueDisplay={settings.grainNoise.toFixed(2)}
+                            value={[settings.grainNoise]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, grainNoise: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
                     </>
                 )}
               </div>
