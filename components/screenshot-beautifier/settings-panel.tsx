@@ -165,7 +165,7 @@ export const SettingsPanel = ({
         {/* Background Options */}
         {settings.backgroundType === "solid" && (
           <div className="space-y-6">
-            <div className="grid grid-cols-5 gap-2.5">
+            <div className="grid grid-cols-4 gap-2.5">
               {solidColorPresets.map((preset, index) => (
                 <button
                   key={index}
