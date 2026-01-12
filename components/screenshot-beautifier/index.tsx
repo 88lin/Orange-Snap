@@ -78,12 +78,9 @@ export function ScreenshotBeautifier() {
           canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.8)
         );
         const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-        
-        const [colors, gradients] = await Promise.all([
-          service.extractColors(file),
-          service.extractGradients(file)
-        ]);
-        
+
+        const { colors, gradients } = await service.extractAll(file);
+
         setAiColors(colors);
         setAiGradients(gradients);
 

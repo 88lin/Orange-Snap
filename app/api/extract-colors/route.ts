@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
         const apiKey = process.env.OPENAI_API_KEY;
         const baseUrl = process.env.OPENAI_BASE_URL;
         const model = process.env.AI_MODEL || 'gemini-2.0-flash';
-        const extractionType = request.headers.get('x-extraction-type') || 'solid'; // 'solid' or 'gradient'
 
         if (!apiKey) {
             return NextResponse.json(
@@ -39,16 +38,10 @@ export async function POST(request: NextRequest) {
         // Convert the file to a base64 data URL
         const bytes = await imageFile.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        const base64Image = buffer.toString('base64');
-        const dataUrl = `data:${imageFile.type};base64,${base64Image}`;
+        const dataUrl = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
 
-        // Define system prompt based on extraction type
-        let systemPrompt = '';
-        if (extractionType === 'gradient') {
-            systemPrompt = '分析图片颜色，提取4组可用于渐变的颜色对（起始色和结束色）。返回内容是一个JSON数组，每个元素包含start和end两个属性，表示渐变的起始和结束颜色。例如：[{"start":"#123456","end":"#789abc"},...]。严格使用JSON格式返回，不要包含任何其他文本。';
-        } else {
-            systemPrompt = '采样一下图片的颜色，返回内容只需返回采样到的8个主要颜色，严格使用JSON进行返回，不能返回除了JSON外的其他内容。';
-        }
+        // Define system prompt for combined extraction
+        const systemPrompt = '从图片中采样8个主要颜色，并分析图片颜色，提取4组可用于渐变的颜色对（起始色和结束色）。返回内容必须是一个严格的JSON对象，不包含任何其他文本或注释。结构为：{"colors": ["#RRGGBB", ...], "gradients": [{"start": "#RRGGBB", "end": "#RRGGBB"}, ...]}。严格使用JSON格式返回。';
 
         // Call OpenAI API to extract colors
         const response = await openai.chat.completions.create({
@@ -70,40 +63,42 @@ export async function POST(request: NextRequest) {
                     ]
                 }
             ],
-            max_tokens: 300,
+            max_tokens: 500,
         });
 
         // Extract JSON response from OpenAI
         const content = response.choices[0]?.message?.content || '';
 
         // Clean and parse the JSON response
-        let jsonMatch;
-        let colorData;
+        let colorData: { colors: string[], gradients: Array<{ start: string, end: string }> } = { colors: [], gradients: [] };
 
         try {
             // Try to parse the entire content as JSON first
-            colorData = JSON.parse(content);
+            const parsed = JSON.parse(content.replace(/```json\n?|\n?```/g, '').trim());
+            colorData = parsed;
         } catch {
             // If that fails, try to extract JSON using regex
-            if (extractionType === 'gradient') {
-                jsonMatch = content.match(/\[\s*\{\s*"start"\s*:\s*"[^"]+"\s*,\s*"end"\s*:\s*"[^"]+"\s*\}(?:\s*,\s*\{\s*"start"\s*:\s*"[^"]+"\s*,\s*"end"\s*:\s*"[^"]+"\s*\})*\s*\]/);
-            } else {
-                jsonMatch = content.match(/\[\s*"[^"]*"(?:\s*,\s*"[^"]*")*\s*\]/);
+            const colorsMatch = content.match(/"colors"\s*:\s*(\[[\s\S]*?\])/);
+            const gradientsMatch = content.match(/"gradients"\s*:\s*(\[[\s\S]*?\])/);
+
+            if (colorsMatch) {
+                try { colorData.colors = JSON.parse(colorsMatch[1]); } catch { /* ignore */ }
+            }
+            if (gradientsMatch) {
+                try { colorData.gradients = JSON.parse(gradientsMatch[1]); } catch { /* ignore */ }
             }
 
-            if (!jsonMatch) {
+            if (colorData.colors.length === 0 && colorData.gradients.length === 0) {
                 return NextResponse.json(
                     { error: 'Failed to extract color data from AI response', raw: content },
                     { status: 500 }
                 );
             }
-
-            colorData = JSON.parse(jsonMatch[0]);
         }
 
         return NextResponse.json({
-            colors: colorData,
-            type: extractionType
+            colors: colorData.colors || [],
+            gradients: colorData.gradients || [],
         });
     } catch (error: any) {
         console.error('Error extracting colors:', error);

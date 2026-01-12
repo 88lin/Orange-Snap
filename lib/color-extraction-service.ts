@@ -3,40 +3,17 @@
  */
 export class ColorExtractionService {
     /**
-     * Extract the main solid colors from an image
+     * Extract both solid colors and gradients from an image in a single request
      * @param imageFile - The image file to analyze
-     * @returns An array of color hex codes
+     * @returns An object containing colors and gradients
      */
-    async extractColors(imageFile: File): Promise<string[]> {
-        return this.extractColorsByType(imageFile, 'solid');
-    }
-
-    /**
-     * Extract gradient color pairs from an image
-     * @param imageFile - The image file to analyze
-     * @returns An array of gradient color pairs
-     */
-    async extractGradients(imageFile: File): Promise<Array<{ start: string, end: string }>> {
-        const result = await this.extractColorsByType(imageFile, 'gradient');
-        return result as Array<{ start: string, end: string }>;
-    }
-
-    /**
-     * Generic method to extract colors by type
-     * @param imageFile - The image file to analyze
-     * @param type - The type of extraction ('solid' or 'gradient')
-     * @returns Array of colors or gradient pairs
-     */
-    private async extractColorsByType(imageFile: File, type: 'solid' | 'gradient'): Promise<any> {
+    async extractAll(imageFile: File): Promise<{ colors: string[], gradients: Array<{ start: string, end: string }> }> {
         const formData = new FormData();
         formData.append('image', imageFile);
 
         try {
             const response = await fetch(`/api/extract-colors`, {
                 method: 'POST',
-                headers: {
-                    'x-extraction-type': type
-                },
                 body: formData,
             });
 
@@ -46,10 +23,33 @@ export class ColorExtractionService {
             }
 
             const data = await response.json();
-            return data.colors;
+            return {
+                colors: data.colors || [],
+                gradients: data.gradients || []
+            };
         } catch (error: any) {
-            console.error(`Error extracting ${type} colors:`, error);
+            console.error(`Error extracting all colors:`, error);
             throw error;
         }
+    }
+
+    /**
+     * Extract the main solid colors from an image
+     * @param imageFile - The image file to analyze
+     * @returns An array of color hex codes
+     */
+    async extractColors(imageFile: File): Promise<string[]> {
+        const result = await this.extractAll(imageFile);
+        return result.colors;
+    }
+
+    /**
+     * Extract gradient color pairs from an image
+     * @param imageFile - The image file to analyze
+     * @returns An array of gradient color pairs
+     */
+    async extractGradients(imageFile: File): Promise<Array<{ start: string, end: string }>> {
+        const result = await this.extractAll(imageFile);
+        return result.gradients;
     }
 } 

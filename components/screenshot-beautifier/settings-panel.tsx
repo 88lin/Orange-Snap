@@ -41,8 +41,7 @@ export const SettingsPanel = ({
   isAutoExtracting,
 }: SettingsPanelProps) => {
   const wallpaperInputRef = useRef<HTMLInputElement>(null);
-  const [isExtractingColors, setIsExtractingColors] = useState(false);
-  const [isExtractingGradients, setIsExtractingGradients] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
 
   const handleWallpaperUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,10 +56,10 @@ export const SettingsPanel = ({
     setSettings(defaultSettings);
   };
 
-  const extractColorsFromImage = async () => {
+  const extractAllFromImage = async () => {
     if (!image) return;
 
-    setIsExtractingColors(true);
+    setIsExtracting(true);
     try {
       // Convert the HTMLImageElement to a File
       const canvas = document.createElement('canvas');
@@ -68,56 +67,25 @@ export const SettingsPanel = ({
       canvas.height = image.height;
       const ctx = canvas.getContext('2d');
       ctx?.drawImage(image, 0, 0);
-      
+
       // Convert canvas to blob
-      const blob = await new Promise<Blob>((resolve) => 
+      const blob = await new Promise<Blob>((resolve) =>
         canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.9)
       );
-      
+
       // Create a file from the blob
       const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-      
-      // Extract colors using the service (no need to pass API key or baseUrl)
+
+      // Extract everything using the service
       const service = new ColorExtractionService();
-      const colors = await service.extractColors(file);
-      
+      const { colors, gradients } = await service.extractAll(file);
+
       setAiColors(colors);
-    } catch (error: any) {
-      console.error("Error extracting colors:", error);
-    } finally {
-      setIsExtractingColors(false);
-    }
-  };
-
-  const extractGradientsFromImage = async () => {
-    if (!image) return;
-
-    setIsExtractingGradients(true);
-    try {
-      // Convert the HTMLImageElement to a File
-      const canvas = document.createElement('canvas');
-      canvas.width = image.width;
-      canvas.height = image.height;
-      const ctx = canvas.getContext('2d');
-      ctx?.drawImage(image, 0, 0);
-      
-      // Convert canvas to blob
-      const blob = await new Promise<Blob>((resolve) => 
-        canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.9)
-      );
-      
-      // Create a file from the blob
-      const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-      
-      // Extract gradients using the service
-      const service = new ColorExtractionService();
-      const gradients = await service.extractGradients(file);
-      
       setAiGradients(gradients);
     } catch (error: any) {
-      console.error("Error extracting gradients:", error);
+      console.error("Error extracting AI data:", error);
     } finally {
-      setIsExtractingGradients(false);
+      setIsExtracting(false);
     }
   };
 
@@ -188,11 +156,11 @@ export const SettingsPanel = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={extractColorsFromImage}
-                  disabled={isExtractingColors || isAutoExtracting || !image}
+                  onClick={extractAllFromImage}
+                  disabled={isExtracting || isAutoExtracting || !image}
                   className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                 >
-                  {isExtractingColors || isAutoExtracting ? (
+                  {isExtracting || isAutoExtracting ? (
                     <Loader2 className="w-2.5 h-2.5 animate-spin" />
                   ) : (
                     <Sparkles className="w-2.5 h-2.5" />
@@ -272,11 +240,11 @@ export const SettingsPanel = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={extractGradientsFromImage}
-                  disabled={isExtractingGradients || isAutoExtracting || !image}
+                  onClick={extractAllFromImage}
+                  disabled={isExtracting || isAutoExtracting || !image}
                   className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                 >
-                  {isExtractingGradients || isAutoExtracting ? (
+                  {isExtracting || isAutoExtracting ? (
                     <Loader2 className="w-2.5 h-2.5 animate-spin" />
                   ) : (
                     <Sparkles className="w-2.5 h-2.5" />
@@ -320,12 +288,12 @@ export const SettingsPanel = ({
                     variant="ghost"
                     size="sm"
                     onClick={async () => {
-                        await extractColorsFromImage();
+                        await extractAllFromImage();
                     }}
-                    disabled={isExtractingColors || isAutoExtracting || !image}
+                    disabled={isExtracting || isAutoExtracting || !image}
                     className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                 >
-                    {isExtractingColors || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                    {isExtracting || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     同步 AI 色彩
                 </Button>
               </div>
@@ -420,12 +388,12 @@ export const SettingsPanel = ({
                         variant="ghost"
                         size="sm"
                         onClick={async () => {
-                            await extractColorsFromImage();
+                            await extractAllFromImage();
                         }}
-                        disabled={isExtractingColors || isAutoExtracting || !image}
+                        disabled={isExtracting || isAutoExtracting || !image}
                         className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
                     >
-                        {isExtractingColors || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                        {isExtracting || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                         AI 提取
                     </Button>
                     <Button
