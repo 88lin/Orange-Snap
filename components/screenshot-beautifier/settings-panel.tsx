@@ -107,13 +107,13 @@ export const SettingsPanel = ({
         </Button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-8 custom-scrollbar relative">
         {/* Background Type */}
-        <section className="space-y-3">
+        <section className="sticky top-0 z-20 pt-6 pb-4 bg-white/95 backdrop-blur-xl -mx-6 px-6 border-b border-orange-100/10 space-y-3">
           <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">画布背景</Label>
           <Select
             value={settings.backgroundType}
-            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper") =>
+            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit") =>
               setSettings((prev) => ({ ...prev, backgroundType: value }))
             }
           >
