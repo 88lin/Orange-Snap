@@ -1,6 +1,6 @@
 "use client";
 
-import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient } from "@paper-design/shaders-react";
+import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient, Warp } from "@paper-design/shaders-react";
 import { ImageSettings } from "./types";
 import { useMemo } from "react";
 
@@ -78,6 +78,21 @@ export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) =>
           intensity={settings.grainIntensity}
           noise={settings.grainNoise}
           shape={settings.grainShape}
+          speed={settings.shaderSpeed}
+          scale={settings.shaderScale}
+          style={{ width: "100%", height: "100%" }}
+        />
+      )}
+      {settings.backgroundType === "warp" && (
+        <Warp
+          colors={colors}
+          proportion={settings.warpProportion}
+          softness={settings.warpSoftness}
+          distortion={settings.shaderDistortion}
+          swirl={settings.shaderSwirl}
+          swirlIterations={settings.warpSwirlIterations}
+          shape={settings.warpShape}
+          shapeScale={settings.warpShapeScale}
           speed={settings.shaderSpeed}
           scale={settings.shaderScale}
           style={{ width: "100%", height: "100%" }}

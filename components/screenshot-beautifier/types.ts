@@ -2,7 +2,7 @@ export interface ImageSettings {
     borderRadius: number
     padding: number
     backgroundColor: string
-    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient"
+    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp"
     gradientStart: string
     gradientEnd: string
     // Paper Shaders settings
@@ -23,6 +23,12 @@ export interface ImageSettings {
     grainIntensity: number
     grainNoise: number
     grainShape: "wave" | "dots" | "truchet" | "corners" | "ripple" | "blob" | "sphere"
+    // Warp settings
+    warpProportion: number
+    warpSoftness: number
+    warpSwirlIterations: number
+    warpShape: "checks" | "stripes" | "edge"
+    warpShapeScale: number
     scale: number
     browserStyle: "none" | "chrome" | "safari"
     shadow: number
@@ -62,8 +68,13 @@ export const defaultSettings: ImageSettings = {
     grainIntensity: 0.5,
     grainNoise: 0.25,
     grainShape: "corners",
+    warpProportion: 0.45,
+    warpSoftness: 1.0,
+    warpSwirlIterations: 10,
+    warpShape: "checks",
+    warpShapeScale: 0.1,
     scale: 1.0,
-    browserStyle: "safari",
+    browserStyle: "none",
     shadow: 30,
     shadowColor: "#00000030",
     wallpaperUrl: "",

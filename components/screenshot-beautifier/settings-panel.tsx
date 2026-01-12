@@ -113,7 +113,7 @@ export const SettingsPanel = ({
           <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">画布背景</Label>
           <Select
             value={settings.backgroundType}
-            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient") =>
+            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp") =>
               setSettings((prev) => ({ ...prev, backgroundType: value }))
             }
           >
@@ -134,6 +134,7 @@ export const SettingsPanel = ({
                 <SelectItem value="noise">噪声艺术 (Simplex Noise 🎨)</SelectItem>
                 <SelectItem value="voronoi">泰森多边形 (Voronoi 💎)</SelectItem>
                 <SelectItem value="grain-gradient">颗粒渐变 (Grain Gradient 🌊)</SelectItem>
+                <SelectItem value="warp">扭曲艺术 (Warp 🌊✨)</SelectItem>
               </SelectGroup>
               <SelectGroup>
                 <SelectLabel className="text-[10px] text-gray-400">装饰背景 (Decorative)</SelectLabel>
@@ -292,7 +293,7 @@ export const SettingsPanel = ({
           </div>
         )}
 
-        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") && (
+        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp") && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2 text-center">
              <div className="flex justify-between items-center px-1">
                 <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">高级着色器控制</Label>
@@ -321,7 +322,7 @@ export const SettingsPanel = ({
                     step={0.01}
                 />
 
-                {settings.backgroundType === "paper-mesh" && (
+                {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "warp") && (
                     <>
                         <CompactSlider
                             label="扭曲"
@@ -344,7 +345,7 @@ export const SettingsPanel = ({
                     </>
                 )}
 
-                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") && (
+                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp") && (
                     <CompactSlider
                         label="比例"
                         valueDisplay={settings.shaderScale.toFixed(1)}
@@ -354,6 +355,66 @@ export const SettingsPanel = ({
                         max={4}
                         step={0.1}
                     />
+                )}
+
+                {settings.backgroundType === "warp" && (
+                    <>
+                        <CompactSlider
+                            label="混合比例"
+                            valueDisplay={settings.warpProportion.toFixed(2)}
+                            value={[settings.warpProportion]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, warpProportion: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                        <CompactSlider
+                            label="柔化"
+                            valueDisplay={settings.warpSoftness.toFixed(2)}
+                            value={[settings.warpSoftness]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, warpSoftness: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                        <CompactSlider
+                            label="旋涡迭代"
+                            valueDisplay={settings.warpSwirlIterations.toString()}
+                            value={[settings.warpSwirlIterations]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, warpSwirlIterations: v }))}
+                            min={0}
+                            max={20}
+                            step={1}
+                        />
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">形状</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400 uppercase">{settings.warpShape}</span>
+                            </div>
+                            <Select
+                                value={settings.warpShape}
+                                onValueChange={(value: any) => setSettings(p => ({ ...p, warpShape: value }))}
+                            >
+                                <SelectTrigger className="w-full bg-gray-50/50 border-gray-100 h-8 text-[10px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="checks">Checks</SelectItem>
+                                    <SelectItem value="stripes">Stripes</SelectItem>
+                                    <SelectItem value="edge">Edge</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <CompactSlider
+                            label="形状比例"
+                            valueDisplay={settings.warpShapeScale.toFixed(2)}
+                            value={[settings.warpShapeScale]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, warpShapeScale: v }))}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                        />
+                    </>
                 )}
 
                 {settings.backgroundType === "noise" && (
