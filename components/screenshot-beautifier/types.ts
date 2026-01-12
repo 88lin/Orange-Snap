@@ -112,6 +112,7 @@ export const solidColorPresets: ColorPreset[] = [
     { name: "深灰 600", color: "#4B5563" },
     { name: "深灰 800", color: "#1F2937" },
     { name: "极致黑", color: "#000000" },
+    { name: "复古棕", color: "#BE643A" },
     { name: "珊瑚红", color: "#F87171" },
     { name: "活力橙", color: "#FB923C" },
     { name: "阳光金", color: "#FBBF24" },
