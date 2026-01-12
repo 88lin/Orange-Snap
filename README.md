@@ -4,7 +4,6 @@
 
 Orange-Snap 已经从一个基础工具进化为了全屏工作台级的设计器，支持 3D 透视变换与 AI 智能配色，实现 100% 的“所见即所得”效果。
 
-![](./images/image.png)
 ![](./images/image2.png)
 ![](./images/image3.png)
 
