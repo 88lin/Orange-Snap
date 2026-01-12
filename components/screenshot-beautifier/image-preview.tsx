@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ImageSettings } from "./types";
 import { MeshBackground } from "./mesh-background";
+import { PaperBackground } from "./paper-background";
 
 interface ImagePreviewProps {
   image: HTMLImageElement | null;
@@ -14,6 +15,7 @@ interface ImagePreviewProps {
   onImageSelect: (img: HTMLImageElement | null) => void;
   triggerFileSelection: () => void;
   settings: ImageSettings;
+  aiColors: string[];
 }
 
 export const ImagePreview = ({
@@ -21,6 +23,7 @@ export const ImagePreview = ({
   onImageSelect,
   triggerFileSelection,
   settings,
+  aiColors,
 }: ImagePreviewProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -181,6 +184,9 @@ export const ImagePreview = ({
                 additionalColors={settings.meshColors}
                 seed={settings.meshSeed}
               />
+            )}
+            {(settings.backgroundType === 'paper-mesh' || settings.backgroundType === 'dot-orbit') && (
+              <PaperBackground settings={settings} aiColors={aiColors} />
             )}
             {/* 3D Transform Group (Image + Frame + Shadow) */}
             <div

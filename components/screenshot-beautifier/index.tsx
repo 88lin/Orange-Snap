@@ -150,6 +150,7 @@ export function ScreenshotBeautifier() {
             onImageSelect={setImage}
             triggerFileSelection={triggerFileSelection}
             settings={settings}
+            aiColors={aiColors}
           />
         </section>
 

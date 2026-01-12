@@ -2,9 +2,15 @@ export interface ImageSettings {
     borderRadius: number
     padding: number
     backgroundColor: string
-    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh"
+    backgroundType: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit"
     gradientStart: string
     gradientEnd: string
+    // Paper Shaders settings
+    shaderDistortion: number
+    shaderSwirl: number
+    shaderSpeed: number
+    shaderScale: number
+    shaderColorBack: string
     scale: number
     browserStyle: "none" | "chrome" | "safari"
     shadow: number
@@ -27,6 +33,11 @@ export const defaultSettings: ImageSettings = {
     backgroundType: "gradient",
     gradientStart: "#ff9a9e",
     gradientEnd: "#fecfef",
+    shaderDistortion: 1,
+    shaderSwirl: 0.8,
+    shaderSpeed: 0.2,
+    shaderScale: 1.0,
+    shaderColorBack: "#000000",
     scale: 1.0,
     browserStyle: "safari",
     shadow: 30,

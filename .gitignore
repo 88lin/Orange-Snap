@@ -29,3 +29,5 @@ next-env.d.ts
 
 # CLAUDE
 CLAUDE.md
+.claude
+plan.md

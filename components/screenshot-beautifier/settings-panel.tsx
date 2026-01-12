@@ -156,6 +156,8 @@ export const SettingsPanel = ({
               <SelectItem value="solid">纯色填充 (Solid)</SelectItem>
               <SelectItem value="gradient">渐变色彩 (Gradient)</SelectItem>
               <SelectItem value="mesh">弥散渐变 (Mesh Gradient ✨)</SelectItem>
+              <SelectItem value="paper-mesh">智能弥散 (Paper Mesh 🎨)</SelectItem>
+              <SelectItem value="dot-orbit">灵动圆点 (Dot Orbit 🪐)</SelectItem>
               <SelectItem value="pattern">艺术图案 (Pattern)</SelectItem>
               <SelectItem value="wallpaper">精美壁纸 (Wallpaper)</SelectItem>
             </SelectContent>
@@ -307,6 +309,105 @@ export const SettingsPanel = ({
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit") && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-top-2 text-center">
+             <div className="flex justify-between items-center px-1">
+                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">高级着色器控制</Label>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={async () => {
+                        await extractColorsFromImage();
+                    }}
+                    disabled={isExtractingColors || isAutoExtracting || !image}
+                    className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
+                >
+                    {isExtractingColors || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                    同步 AI 色彩
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                    <div className="flex justify-between items-center px-1">
+                        <Label className="text-[10px] text-gray-400">速度</Label>
+                        <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderSpeed}</span>
+                    </div>
+                    <Slider
+                        value={[settings.shaderSpeed]}
+                        onValueChange={([v]) => setSettings(p => ({ ...p, shaderSpeed: v }))}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                </div>
+
+                {settings.backgroundType === "paper-mesh" && (
+                    <>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">扭曲</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderDistortion}</span>
+                            </div>
+                            <Slider
+                                value={[settings.shaderDistortion]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, shaderDistortion: v }))}
+                                min={0}
+                                max={2}
+                                step={0.1}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center px-1">
+                                <Label className="text-[10px] text-gray-400">旋涡</Label>
+                                <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderSwirl}</span>
+                            </div>
+                            <Slider
+                                value={[settings.shaderSwirl]}
+                                onValueChange={([v]) => setSettings(p => ({ ...p, shaderSwirl: v }))}
+                                min={0}
+                                max={2}
+                                step={0.1}
+                            />
+                        </div>
+                    </>
+                )}
+
+                {settings.backgroundType === "dot-orbit" && (
+                    <div className="space-y-2">
+                        <div className="flex justify-between items-center px-1">
+                            <Label className="text-[10px] text-gray-400">比例</Label>
+                            <span className="text-[9px] tabular-nums text-gray-400">{settings.shaderScale}</span>
+                        </div>
+                        <Slider
+                            value={[settings.shaderScale]}
+                            onValueChange={([v]) => setSettings(p => ({ ...p, shaderScale: v }))}
+                            min={0.1}
+                            max={2}
+                            step={0.1}
+                        />
+                    </div>
+                )}
+              </div>
+
+              <div className="space-y-3">
+                 <p className="text-[9px] text-gray-400 px-1 text-center">色彩配置 (AI 同步或预设)</p>
+                 <div className="flex flex-wrap gap-2 px-1 justify-center">
+                    {(aiColors.length > 0 ? aiColors : solidColorPresets.slice(0, 8).map(p => p.color)).map((color, i) => (
+                        <div
+                            key={i}
+                            className="w-5 h-5 rounded-full border border-gray-100 shadow-sm"
+                            style={{ backgroundColor: color }}
+                        />
+                    ))}
+                 </div>
+                 <p className="text-[9px] text-gray-600/60 italic leading-relaxed px-1 text-center">
+                    使用上方“同步 AI 色彩”将截图氛围注入着色器
+                 </p>
+              </div>
           </div>
         )}
 
