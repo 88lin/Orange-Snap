@@ -6,6 +6,7 @@ Orange-Snap 已经从一个基础工具进化为了全屏工作台级的设计�
 
 ![](./images/image.png)
 ![](./images/image2.png)
+![](./images/image3.png)
 
 ## ✨ 特点
 

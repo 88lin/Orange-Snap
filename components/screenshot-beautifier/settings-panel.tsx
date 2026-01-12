@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
+import { CompactSlider } from "./compact-slider";
 import {
   gradientPresets,
   ImageSettings,
@@ -502,60 +503,44 @@ export const SettingsPanel = ({
         {/* Style Controls */}
         <section className="space-y-6 pt-6 border-t border-gray-50">
           <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">截图样式</Label>
-          
-          <div className="space-y-4">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <Label className="text-xs font-medium text-gray-600">圆角</Label>
-                <span className="text-[10px] tabular-nums text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{settings.borderRadius}px</span>
-              </div>
-              <Slider
-                value={[settings.borderRadius]}
-                onValueChange={([value]) => setSettings((prev) => ({ ...prev, borderRadius: value }))}
-                max={100}
-                step={1}
-              />
-            </div>
 
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <Label className="text-xs font-medium text-gray-600">内边距</Label>
-                <span className="text-[10px] tabular-nums text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{settings.padding}px</span>
-              </div>
-              <Slider
-                value={[settings.padding]}
-                onValueChange={([value]) => setSettings((prev) => ({ ...prev, padding: value }))}
-                max={400}
-                step={10}
-              />
-            </div>
+          <div className="space-y-3">
+            <CompactSlider
+              label="圆角"
+              valueDisplay={`${settings.borderRadius}px`}
+              value={[settings.borderRadius]}
+              onValueChange={([value]) => setSettings((prev) => ({ ...prev, borderRadius: value }))}
+              max={100}
+              step={1}
+            />
 
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <Label className="text-xs font-medium text-gray-600">缩放</Label>
-                <span className="text-[10px] tabular-nums text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{Math.round(settings.scale * 100)}%</span>
-              </div>
-              <Slider
-                value={[settings.scale]}
-                onValueChange={([value]) => setSettings((prev) => ({ ...prev, scale: value }))}
-                min={0.1}
-                max={3}
-                step={0.1}
-              />
-            </div>
+            <CompactSlider
+              label="内边距"
+              valueDisplay={`${settings.padding}px`}
+              value={[settings.padding]}
+              onValueChange={([value]) => setSettings((prev) => ({ ...prev, padding: value }))}
+              max={400}
+              step={10}
+            />
 
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <Label className="text-xs font-medium text-gray-600">阴影</Label>
-                <span className="text-[10px] tabular-nums text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">{settings.shadow}px</span>
-              </div>
-              <Slider
-                value={[settings.shadow]}
-                onValueChange={([value]) => setSettings((prev) => ({ ...prev, shadow: value }))}
-                max={50}
-                step={1}
-              />
-            </div>
+            <CompactSlider
+              label="缩放"
+              valueDisplay={`${Math.round(settings.scale * 100)}%`}
+              value={[settings.scale]}
+              onValueChange={([value]) => setSettings((prev) => ({ ...prev, scale: value }))}
+              min={0.1}
+              max={3}
+              step={0.1}
+            />
+
+            <CompactSlider
+              label="阴影"
+              valueDisplay={`${settings.shadow}px`}
+              value={[settings.shadow]}
+              onValueChange={([value]) => setSettings((prev) => ({ ...prev, shadow: value }))}
+              max={50}
+              step={1}
+            />
           </div>
         </section>
 
