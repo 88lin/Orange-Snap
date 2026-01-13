@@ -38,12 +38,14 @@ AI_MODEL=gemini-2.0-flash
 ```
 
 注意：
+
 - `OPENAI_API_KEY` 是必需的，用于访问 Vision API。
 - `AI_MODEL` 默认为 `gemini-2.0-flash`。
 
 ## 🚀 极致性能
 
 项目已全面迁移至 **VoidZero** 工具链：
+
 - **Linter**: 使用 [Oxlint](https://oxlint.rs) 替代 ESLint，代码检查提速 100 倍。
 - **Framework**: 构建于 [Next.js 15.5.9](https://nextjs.org) 尖端版本。
 
@@ -59,3 +61,4 @@ pnpm run dev
 # 构建生产版本
 pnpm run build
 pnpm start
+```

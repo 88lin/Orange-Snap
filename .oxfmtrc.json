@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "singleQuote": false,
+  "trailingComma": "all",
+  "ignorePatterns": [
+    ".next/**",
+    "node_modules/**",
+    "build/**",
+    "out/**",
+    "public/**",
+    "next-env.d.ts",
+    ".claude/**",
+    "plan.md",
+    "CLAUDE.md"
+  ],
+  "experimentalSortPackageJson": true,
+  "experimentalTailwindcss": {
+    "functions": ["cn", "clsx", "twMerge"],
+    "config": "./tailwind.config.ts"
+  }
+}

@@ -3,7 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
 import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
@@ -51,7 +59,6 @@ export const SettingsPanel = ({
     }
   };
 
-
   const resetSettings = () => {
     setSettings(defaultSettings);
   };
@@ -62,19 +69,19 @@ export const SettingsPanel = ({
     setIsExtracting(true);
     try {
       // Convert the HTMLImageElement to a File
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = image.width;
       canvas.height = image.height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx?.drawImage(image, 0, 0);
 
       // Convert canvas to blob
       const blob = await new Promise<Blob>((resolve) =>
-        canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.9)
+        canvas.toBlob((blob) => resolve(blob!), "image/jpeg", 0.9),
       );
 
       // Create a file from the blob
-      const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+      const file = new File([blob], "image.jpg", { type: "image/jpeg" });
 
       // Extract everything using the service
       const service = new ColorExtractionService();
@@ -90,34 +97,49 @@ export const SettingsPanel = ({
   };
 
   return (
-    <div className="flex flex-col h-full bg-transparent">
-      <div className="p-6 border-b border-orange-100/30 flex items-center justify-between shrink-0">
-        <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-          <div className="w-1.5 h-3.5 bg-gradient-to-b from-orange-500 to-amber-500 rounded-full"/>
+    <div className="flex h-full flex-col bg-transparent">
+      <div className="flex shrink-0 items-center justify-between border-b border-orange-100/30 p-6">
+        <h3 className="flex items-center gap-2 text-sm font-bold text-gray-900">
+          <div className="h-3.5 w-1.5 rounded-full bg-gradient-to-b from-orange-500 to-amber-500" />
           编辑选项
         </h3>
         <Button
           variant="ghost"
           size="icon"
           onClick={resetSettings}
-          className="h-8 w-8 text-gray-400 hover:text-orange-500 hover:bg-orange-50 transition-all rounded-full"
+          className="h-8 w-8 rounded-full text-gray-400 transition-all hover:bg-orange-50 hover:text-orange-500"
           title="重置设置"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-8 custom-scrollbar relative">
+      <div className="custom-scrollbar relative flex-1 space-y-8 overflow-y-auto p-6 pt-0">
         {/* Background Type */}
-        <section className="sticky top-0 z-20 pt-6 pb-4 bg-white/95 backdrop-blur-xl -mx-6 px-6 border-b border-orange-100/10 space-y-3">
-          <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">画布背景</Label>
+        <section className="sticky top-0 z-20 -mx-6 space-y-3 border-b border-orange-100/10 bg-white/95 px-6 pb-4 pt-6 backdrop-blur-xl">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            画布背景
+          </Label>
           <Select
             value={settings.backgroundType}
-            onValueChange={(value: "solid" | "gradient" | "pattern" | "wallpaper" | "mesh" | "paper-mesh" | "dot-orbit" | "noise" | "voronoi" | "grain-gradient" | "warp" | "static-mesh" | "smoke-ring") =>
-              setSettings((prev) => ({ ...prev, backgroundType: value }))
-            }
+            onValueChange={(
+              value:
+                | "solid"
+                | "gradient"
+                | "pattern"
+                | "wallpaper"
+                | "mesh"
+                | "paper-mesh"
+                | "dot-orbit"
+                | "noise"
+                | "voronoi"
+                | "grain-gradient"
+                | "warp"
+                | "static-mesh"
+                | "smoke-ring",
+            ) => setSettings((prev) => ({ ...prev, backgroundType: value }))}
           >
-            <SelectTrigger className="w-full bg-gray-50/50 border-gray-100 h-10 text-sm">
+            <SelectTrigger className="h-10 w-full border-gray-100 bg-gray-50/50 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -127,7 +149,9 @@ export const SettingsPanel = ({
                 <SelectItem value="gradient">渐变色彩 (Gradient)</SelectItem>
               </SelectGroup>
               <SelectGroup>
-                <SelectLabel className="text-[10px] text-gray-400">艺术着色器 (Shaders)</SelectLabel>
+                <SelectLabel className="text-[10px] text-gray-400">
+                  艺术着色器 (Shaders)
+                </SelectLabel>
                 <SelectItem value="mesh">弥散渐变 (Mesh Gradient ✨)</SelectItem>
                 <SelectItem value="paper-mesh">智能弥散 (Paper Mesh 🎨)</SelectItem>
                 <SelectItem value="static-mesh">静态弥散 (Static Mesh 🎨)</SelectItem>
@@ -139,7 +163,9 @@ export const SettingsPanel = ({
                 <SelectItem value="smoke-ring">烟雾环 (Smoke Ring 💨)</SelectItem>
               </SelectGroup>
               <SelectGroup>
-                <SelectLabel className="text-[10px] text-gray-400">装饰背景 (Decorative)</SelectLabel>
+                <SelectLabel className="text-[10px] text-gray-400">
+                  装饰背景 (Decorative)
+                </SelectLabel>
                 <SelectItem value="pattern">艺术图案 (Pattern)</SelectItem>
                 <SelectItem value="wallpaper">精美壁纸 (Wallpaper)</SelectItem>
               </SelectGroup>
@@ -154,31 +180,43 @@ export const SettingsPanel = ({
               {solidColorPresets.map((preset, index) => (
                 <button
                   key={index}
-                  onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: preset.color }))}
-                  className={`w-full aspect-square rounded-full border-2 transition-all hover:scale-110 active:scale-95 ${
-                    settings.backgroundColor === preset.color ? "border-orange-500 ring-2 ring-orange-500/20" : "border-transparent"
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      backgroundColor: preset.color,
+                    }))
+                  }
+                  className={`aspect-square w-full rounded-full border-2 transition-all hover:scale-110 active:scale-95 ${
+                    settings.backgroundColor === preset.color
+                      ? "border-orange-500 ring-2 ring-orange-500/20"
+                      : "border-transparent"
                   }`}
-                  style={{ backgroundColor: preset.color, boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)' }}
+                  style={{
+                    backgroundColor: preset.color,
+                    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)",
+                  }}
                   title={preset.name}
                 />
               ))}
             </div>
 
             {/* AI Color Extraction */}
-            <div className="space-y-4 pt-4 border-t border-gray-50">
-              <div className="flex justify-between items-center">
-                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">AI 智能分析</Label>
+            <div className="space-y-4 border-t border-gray-50 pt-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                  AI 智能分析
+                </Label>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={extractAllFromImage}
                   disabled={isExtracting || isAutoExtracting || !image}
-                  className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
+                  className="h-6 gap-1 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50"
                 >
                   {isExtracting || isAutoExtracting ? (
-                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <Loader2 className="h-2.5 w-2.5 animate-spin" />
                   ) : (
-                    <Sparkles className="w-2.5 h-2.5" />
+                    <Sparkles className="h-2.5 w-2.5" />
                   )}
                   重新采样
                 </Button>
@@ -190,45 +228,62 @@ export const SettingsPanel = ({
                     {aiColors.map((color, index) => (
                       <button
                         key={index}
-                        onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: color }))}
-                        className={`w-5 h-5 rounded-full border border-gray-100 transition-all hover:scale-110 ${
-                          settings.backgroundColor === color ? "ring-2 ring-orange-500/40 border-orange-500" : ""
+                        onClick={() =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            backgroundColor: color,
+                          }))
+                        }
+                        className={`h-5 w-5 rounded-full border border-gray-100 transition-all hover:scale-110 ${
+                          settings.backgroundColor === color
+                            ? "border-orange-500 ring-2 ring-orange-500/40"
+                            : ""
                         }`}
                         style={{ backgroundColor: color }}
                       />
                     ))}
                   </div>
-                  <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
-                    <p className="text-[10px] text-orange-600/70 italic leading-relaxed text-center">
+                  <div className="rounded-xl border border-orange-100/50 bg-orange-50/50 p-3">
+                    <p className="text-center text-[10px] italic leading-relaxed text-orange-600/70">
                       AI 已根据截图光影自动提取色库
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="py-2 border border-dashed border-gray-100 rounded-lg text-center">
-                   <p className="text-[9px] text-gray-300">正在等待图片分析...</p>
+                <div className="rounded-lg border border-dashed border-gray-100 py-2 text-center">
+                  <p className="text-[9px] text-gray-300">正在等待图片分析...</p>
                 </div>
               )}
             </div>
 
             <div className="flex items-center gap-2 pt-2">
-              <div className="relative w-10 h-10 shrink-0">
+              <div className="relative h-10 w-10 shrink-0">
                 <Input
                   type="color"
                   value={settings.backgroundColor}
-                  onChange={(e) => setSettings((prev) => ({ ...prev, backgroundColor: e.target.value }))}
-                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  onChange={(e) =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      backgroundColor: e.target.value,
+                    }))
+                  }
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 />
                 <div
-                  className="w-full h-full rounded-lg border border-gray-100 shadow-sm"
+                  className="h-full w-full rounded-lg border border-gray-100 shadow-sm"
                   style={{ backgroundColor: settings.backgroundColor }}
                 />
               </div>
               <Input
                 type="text"
                 value={settings.backgroundColor}
-                onChange={(e) => setSettings((prev) => ({ ...prev, backgroundColor: e.target.value }))}
-                className="flex-1 h-10 text-xs bg-gray-50/50 border-gray-100"
+                onChange={(e) =>
+                  setSettings((prev) => ({
+                    ...prev,
+                    backgroundColor: e.target.value,
+                  }))
+                }
+                className="h-10 flex-1 border-gray-100 bg-gray-50/50 text-xs"
                 placeholder="#HEXCOLOR"
               />
             </div>
@@ -241,28 +296,38 @@ export const SettingsPanel = ({
               {gradientPresets.map((preset, index) => (
                 <button
                   key={index}
-                  onClick={() => setSettings((prev) => ({ ...prev, gradientStart: preset.start, gradientEnd: preset.end }))}
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      gradientStart: preset.start,
+                      gradientEnd: preset.end,
+                    }))
+                  }
                   className="h-10 rounded-lg border border-gray-100 transition-all hover:scale-[1.02] active:scale-95"
-                  style={{ background: `linear-gradient(45deg, ${preset.start}, ${preset.end})` }}
+                  style={{
+                    background: `linear-gradient(45deg, ${preset.start}, ${preset.end})`,
+                  }}
                 />
               ))}
             </div>
-            
+
             {/* AI Gradient Extraction */}
-            <div className="space-y-4 pt-4 border-t border-gray-50">
-              <div className="flex justify-between items-center">
-                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">AI 智能渐变</Label>
+            <div className="space-y-4 border-t border-gray-50 pt-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                  AI 智能渐变
+                </Label>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={extractAllFromImage}
                   disabled={isExtracting || isAutoExtracting || !image}
-                  className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
+                  className="h-6 gap-1 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50"
                 >
                   {isExtracting || isAutoExtracting ? (
-                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <Loader2 className="h-2.5 w-2.5 animate-spin" />
                   ) : (
-                    <Sparkles className="w-2.5 h-2.5" />
+                    <Sparkles className="h-2.5 w-2.5" />
                   )}
                   重新匹配
                 </Button>
@@ -274,524 +339,613 @@ export const SettingsPanel = ({
                     {aiGradients.map((gradient, index) => (
                       <button
                         key={index}
-                        onClick={() => setSettings((prev) => ({ ...prev, gradientStart: gradient.start, gradientEnd: gradient.end }))}
-                        className="h-8 rounded-lg border border-gray-100 transition-all hover:scale-[1.02] shadow-sm"
-                        style={{ background: `linear-gradient(45deg, ${gradient.start}, ${gradient.end})` }}
+                        onClick={() =>
+                          setSettings((prev) => ({
+                            ...prev,
+                            gradientStart: gradient.start,
+                            gradientEnd: gradient.end,
+                          }))
+                        }
+                        className="h-8 rounded-lg border border-gray-100 shadow-sm transition-all hover:scale-[1.02]"
+                        style={{
+                          background: `linear-gradient(45deg, ${gradient.start}, ${gradient.end})`,
+                        }}
                       />
                     ))}
                   </div>
-                  <div className="bg-orange-50/50 p-3 rounded-xl border border-orange-100/50">
-                    <p className="text-[10px] text-orange-600/70 italic leading-relaxed text-center">
+                  <div className="rounded-xl border border-orange-100/50 bg-orange-50/50 p-3">
+                    <p className="text-center text-[10px] italic leading-relaxed text-orange-600/70">
                       AI 已根据截图氛围推荐最佳色彩过渡
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="py-2 border border-dashed border-gray-100 rounded-lg text-center">
-                   <p className="text-[9px] text-gray-300">正在等待渐变匹配...</p>
+                <div className="rounded-lg border border-dashed border-gray-100 py-2 text-center">
+                  <p className="text-[9px] text-gray-300">正在等待渐变匹配...</p>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh" || settings.backgroundType === "smoke-ring") && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-top-2 text-center">
-             <div className="flex justify-between items-center px-1">
-                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">高级着色器控制</Label>
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={async () => {
-                        await extractAllFromImage();
-                    }}
-                    disabled={isExtracting || isAutoExtracting || !image}
-                    className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
-                >
-                    {isExtracting || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                    同步 AI 色彩
-                </Button>
-              </div>
+        {(settings.backgroundType === "paper-mesh" ||
+          settings.backgroundType === "dot-orbit" ||
+          settings.backgroundType === "noise" ||
+          settings.backgroundType === "voronoi" ||
+          settings.backgroundType === "grain-gradient" ||
+          settings.backgroundType === "warp" ||
+          settings.backgroundType === "static-mesh" ||
+          settings.backgroundType === "smoke-ring") && (
+          <div className="space-y-6 text-center animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center justify-between px-1">
+              <Label className="text-center text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                高级着色器控制
+              </Label>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={async () => {
+                  await extractAllFromImage();
+                }}
+                disabled={isExtracting || isAutoExtracting || !image}
+                className="h-6 gap-1 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50"
+              >
+                {isExtracting || isAutoExtracting ? (
+                  <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                ) : (
+                  <Sparkles className="h-3 w-3" />
+                )}
+                同步 AI 色彩
+              </Button>
+            </div>
 
-              <div className="space-y-3">
-                {(settings.backgroundType !== "static-mesh") && (
+            <div className="space-y-3">
+              {settings.backgroundType !== "static-mesh" && (
+                <CompactSlider
+                  label="速度"
+                  valueDisplay={settings.shaderSpeed.toFixed(2)}
+                  value={[settings.shaderSpeed]}
+                  onValueChange={([v]) => setSettings((p) => ({ ...p, shaderSpeed: v }))}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                />
+              )}
+
+              {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "warp") && (
+                <>
                   <CompactSlider
-                      label="速度"
-                      valueDisplay={settings.shaderSpeed.toFixed(2)}
-                      value={[settings.shaderSpeed]}
-                      onValueChange={([v]) => setSettings(p => ({ ...p, shaderSpeed: v }))}
-                      min={0}
-                      max={1}
-                      step={0.01}
+                    label="扭曲"
+                    valueDisplay={settings.shaderDistortion.toFixed(1)}
+                    value={[settings.shaderDistortion]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, shaderDistortion: v }))}
+                    min={0}
+                    max={2}
+                    step={0.1}
                   />
-                )}
+                  <CompactSlider
+                    label="旋涡"
+                    valueDisplay={settings.shaderSwirl.toFixed(1)}
+                    value={[settings.shaderSwirl]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, shaderSwirl: v }))}
+                    min={0}
+                    max={2}
+                    step={0.1}
+                  />
+                </>
+              )}
 
-                {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "warp") && (
-                    <>
-                        <CompactSlider
-                            label="扭曲"
-                            valueDisplay={settings.shaderDistortion.toFixed(1)}
-                            value={[settings.shaderDistortion]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, shaderDistortion: v }))}
-                            min={0}
-                            max={2}
-                            step={0.1}
-                        />
-                        <CompactSlider
-                            label="旋涡"
-                            valueDisplay={settings.shaderSwirl.toFixed(1)}
-                            value={[settings.shaderSwirl]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, shaderSwirl: v }))}
-                            min={0}
-                            max={2}
-                            step={0.1}
-                        />
-                    </>
-                )}
+              {(settings.backgroundType === "paper-mesh" ||
+                settings.backgroundType === "static-mesh") && (
+                <>
+                  <CompactSlider
+                    label="颗粒混合"
+                    valueDisplay={settings.grainMixer.toFixed(2)}
+                    value={[settings.grainMixer]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, grainMixer: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="颗粒叠加"
+                    valueDisplay={settings.grainOverlay.toFixed(2)}
+                    value={[settings.grainOverlay]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, grainOverlay: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </>
+              )}
 
-                {(settings.backgroundType === "paper-mesh" || settings.backgroundType === "static-mesh") && (
-                  <>
-                    <CompactSlider
-                        label="颗粒混合"
-                        valueDisplay={settings.grainMixer.toFixed(2)}
-                        value={[settings.grainMixer]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, grainMixer: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="颗粒叠加"
-                        valueDisplay={settings.grainOverlay.toFixed(2)}
-                        value={[settings.grainOverlay]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, grainOverlay: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                  </>
-                )}
+              {(settings.backgroundType === "dot-orbit" ||
+                settings.backgroundType === "noise" ||
+                settings.backgroundType === "voronoi" ||
+                settings.backgroundType === "grain-gradient" ||
+                settings.backgroundType === "warp" ||
+                settings.backgroundType === "static-mesh" ||
+                settings.backgroundType === "smoke-ring") && (
+                <CompactSlider
+                  label="比例"
+                  valueDisplay={settings.shaderScale.toFixed(1)}
+                  value={[settings.shaderScale]}
+                  onValueChange={([v]) => setSettings((p) => ({ ...p, shaderScale: v }))}
+                  min={0.1}
+                  max={4}
+                  step={0.1}
+                />
+              )}
 
-                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "warp" || settings.backgroundType === "static-mesh" || settings.backgroundType === "smoke-ring") && (
-                    <CompactSlider
-                        label="比例"
-                        valueDisplay={settings.shaderScale.toFixed(1)}
-                        value={[settings.shaderScale]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, shaderScale: v }))}
-                        min={0.1}
-                        max={4}
-                        step={0.1}
-                    />
-                )}
+              {settings.backgroundType === "smoke-ring" && (
+                <>
+                  <CompactSlider
+                    label="噪声频率"
+                    valueDisplay={settings.smokeNoiseScale.toFixed(2)}
+                    value={[settings.smokeNoiseScale]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, smokeNoiseScale: v }))}
+                    min={0.01}
+                    max={5}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="噪声细节"
+                    valueDisplay={settings.smokeNoiseIterations.toString()}
+                    value={[settings.smokeNoiseIterations]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, smokeNoiseIterations: v }))}
+                    min={1}
+                    max={8}
+                    step={1}
+                  />
+                  <CompactSlider
+                    label="半径"
+                    valueDisplay={settings.smokeRadius.toFixed(2)}
+                    value={[settings.smokeRadius]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, smokeRadius: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="厚度"
+                    valueDisplay={settings.smokeThickness.toFixed(2)}
+                    value={[settings.smokeThickness]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, smokeThickness: v }))}
+                    min={0.01}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="内部填充"
+                    valueDisplay={settings.smokeInnerShape.toFixed(2)}
+                    value={[settings.smokeInnerShape]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, smokeInnerShape: v }))}
+                    min={0}
+                    max={4}
+                    step={0.1}
+                  />
+                </>
+              )}
 
-                {settings.backgroundType === "smoke-ring" && (
-                  <>
-                    <CompactSlider
-                        label="噪声频率"
-                        valueDisplay={settings.smokeNoiseScale.toFixed(2)}
-                        value={[settings.smokeNoiseScale]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeNoiseScale: v }))}
-                        min={0.01}
-                        max={5}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="噪声细节"
-                        valueDisplay={settings.smokeNoiseIterations.toString()}
-                        value={[settings.smokeNoiseIterations]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeNoiseIterations: v }))}
-                        min={1}
-                        max={8}
-                        step={1}
-                    />
-                    <CompactSlider
-                        label="半径"
-                        valueDisplay={settings.smokeRadius.toFixed(2)}
-                        value={[settings.smokeRadius]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeRadius: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="厚度"
-                        valueDisplay={settings.smokeThickness.toFixed(2)}
-                        value={[settings.smokeThickness]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeThickness: v }))}
-                        min={0.01}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="内部填充"
-                        valueDisplay={settings.smokeInnerShape.toFixed(2)}
-                        value={[settings.smokeInnerShape]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, smokeInnerShape: v }))}
-                        min={0}
-                        max={4}
-                        step={0.1}
-                    />
-                  </>
-                )}
+              {settings.backgroundType === "static-mesh" && (
+                <>
+                  <CompactSlider
+                    label="位置"
+                    valueDisplay={settings.meshPositions.toString()}
+                    value={[settings.meshPositions]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshPositions: v }))}
+                    min={0}
+                    max={100}
+                    step={1}
+                  />
+                  <CompactSlider
+                    label="波形 X"
+                    valueDisplay={settings.meshWaveX.toFixed(2)}
+                    value={[settings.meshWaveX]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshWaveX: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="波形 X 偏移"
+                    valueDisplay={settings.meshWaveXShift.toFixed(2)}
+                    value={[settings.meshWaveXShift]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshWaveXShift: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="波形 Y"
+                    valueDisplay={settings.meshWaveY.toFixed(2)}
+                    value={[settings.meshWaveY]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshWaveY: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="波形 Y 偏移"
+                    valueDisplay={settings.meshWaveYShift.toFixed(2)}
+                    value={[settings.meshWaveYShift]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshWaveYShift: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="混合"
+                    valueDisplay={settings.meshMixing.toFixed(2)}
+                    value={[settings.meshMixing]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshMixing: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="旋转"
+                    valueDisplay={settings.meshRotation.toString()}
+                    value={[settings.meshRotation]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, meshRotation: v }))}
+                    min={0}
+                    max={360}
+                    step={1}
+                  />
+                </>
+              )}
 
-                {settings.backgroundType === "static-mesh" && (
-                  <>
-                    <CompactSlider
-                        label="位置"
-                        valueDisplay={settings.meshPositions.toString()}
-                        value={[settings.meshPositions]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshPositions: v }))}
-                        min={0}
-                        max={100}
-                        step={1}
-                    />
-                    <CompactSlider
-                        label="波形 X"
-                        valueDisplay={settings.meshWaveX.toFixed(2)}
-                        value={[settings.meshWaveX]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveX: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="波形 X 偏移"
-                        valueDisplay={settings.meshWaveXShift.toFixed(2)}
-                        value={[settings.meshWaveXShift]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveXShift: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="波形 Y"
-                        valueDisplay={settings.meshWaveY.toFixed(2)}
-                        value={[settings.meshWaveY]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveY: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="波形 Y 偏移"
-                        valueDisplay={settings.meshWaveYShift.toFixed(2)}
-                        value={[settings.meshWaveYShift]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshWaveYShift: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="混合"
-                        valueDisplay={settings.meshMixing.toFixed(2)}
-                        value={[settings.meshMixing]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshMixing: v }))}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    />
-                    <CompactSlider
-                        label="旋转"
-                        valueDisplay={settings.meshRotation.toString()}
-                        value={[settings.meshRotation]}
-                        onValueChange={([v]) => setSettings(p => ({ ...p, meshRotation: v }))}
-                        min={0}
-                        max={360}
-                        step={1}
-                    />
-                  </>
-                )}
-
-                {settings.backgroundType === "warp" && (
-                    <>
-                        <CompactSlider
-                            label="混合比例"
-                            valueDisplay={settings.warpProportion.toFixed(2)}
-                            value={[settings.warpProportion]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, warpProportion: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                        <CompactSlider
-                            label="柔化"
-                            valueDisplay={settings.warpSoftness.toFixed(2)}
-                            value={[settings.warpSoftness]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, warpSoftness: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                        <CompactSlider
-                            label="旋涡迭代"
-                            valueDisplay={settings.warpSwirlIterations.toString()}
-                            value={[settings.warpSwirlIterations]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, warpSwirlIterations: v }))}
-                            min={0}
-                            max={20}
-                            step={1}
-                        />
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">形状</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400 uppercase">{settings.warpShape}</span>
-                            </div>
-                            <Select
-                                value={settings.warpShape}
-                                onValueChange={(value: any) => setSettings(p => ({ ...p, warpShape: value }))}
-                            >
-                                <SelectTrigger className="w-full bg-gray-50/50 border-gray-100 h-8 text-[10px]">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="checks">Checks</SelectItem>
-                                    <SelectItem value="stripes">Stripes</SelectItem>
-                                    <SelectItem value="edge">Edge</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <CompactSlider
-                            label="形状比例"
-                            valueDisplay={settings.warpShapeScale.toFixed(2)}
-                            value={[settings.warpShapeScale]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, warpShapeScale: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                    </>
-                )}
-
-                {settings.backgroundType === "noise" && (
-                    <>
-                        <CompactSlider
-                            label="步数"
-                            valueDisplay={settings.noiseSteps.toString()}
-                            value={[settings.noiseSteps]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, noiseSteps: v }))}
-                            min={1}
-                            max={5}
-                            step={1}
-                        />
-                        <CompactSlider
-                            label="柔化"
-                            valueDisplay={settings.noiseSoftness.toFixed(2)}
-                            value={[settings.noiseSoftness]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, noiseSoftness: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                    </>
-                )}
-
-                {settings.backgroundType === "voronoi" && (
-                    <>
-                        <CompactSlider
-                            label="步数"
-                            valueDisplay={settings.voronoiSteps.toString()}
-                            value={[settings.voronoiSteps]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiSteps: v }))}
-                            min={1}
-                            max={10}
-                            step={1}
-                        />
-                        <CompactSlider
-                            label="扭曲"
-                            valueDisplay={settings.voronoiDistortion.toFixed(2)}
-                            value={[settings.voronoiDistortion]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiDistortion: v }))}
-                            min={0}
-                            max={2}
-                            step={0.1}
-                        />
-                        <CompactSlider
-                            label="间隙"
-                            valueDisplay={settings.voronoiGap.toFixed(2)}
-                            value={[settings.voronoiGap]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiGap: v }))}
-                            min={0}
-                            max={0.5}
-                            step={0.01}
-                        />
-                        <CompactSlider
-                            label="发光"
-                            valueDisplay={settings.voronoiGlow.toFixed(2)}
-                            value={[settings.voronoiGlow]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, voronoiGlow: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                        <div className="grid grid-cols-2 gap-3 pt-2">
-                            <div className="space-y-2">
-                                <Label className="text-[10px] text-gray-400">发光色</Label>
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        type="color"
-                                        value={settings.voronoiGlowColor}
-                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGlowColor: e.target.value }))}
-                                        className="w-6 h-6 p-0 border-none bg-transparent"
-                                    />
-                                    <Input
-                                        type="text"
-                                        value={settings.voronoiGlowColor}
-                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGlowColor: e.target.value }))}
-                                        className="flex-1 h-7 text-[9px] bg-gray-50/50 border-gray-100"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-[10px] text-gray-400">间隙色</Label>
-                                <div className="flex items-center gap-2">
-                                    <Input
-                                        type="color"
-                                        value={settings.voronoiGapColor}
-                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGapColor: e.target.value }))}
-                                        className="w-6 h-6 p-0 border-none bg-transparent"
-                                    />
-                                    <Input
-                                        type="text"
-                                        value={settings.voronoiGapColor}
-                                        onChange={(e) => setSettings(p => ({ ...p, voronoiGapColor: e.target.value }))}
-                                        className="flex-1 h-7 text-[9px] bg-gray-50/50 border-gray-100"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )}
-
-                {(settings.backgroundType === "dot-orbit" || settings.backgroundType === "grain-gradient" || settings.backgroundType === "smoke-ring") && (
-                    <div className="space-y-2 pt-2">
-                        <Label className="text-[10px] text-gray-400">底色 (Background)</Label>
-                        <div className="flex items-center gap-2">
-                            <Input
-                                type="color"
-                                value={settings.shaderColorBack}
-                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
-                                className="w-8 h-8 p-0 border-none bg-transparent"
-                            />
-                            <Input
-                                type="text"
-                                value={settings.shaderColorBack}
-                                onChange={(e) => setSettings(p => ({ ...p, shaderColorBack: e.target.value }))}
-                                className="flex-1 h-8 text-[10px] bg-gray-50/50 border-gray-100"
-                            />
-                        </div>
+              {settings.backgroundType === "warp" && (
+                <>
+                  <CompactSlider
+                    label="混合比例"
+                    valueDisplay={settings.warpProportion.toFixed(2)}
+                    value={[settings.warpProportion]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, warpProportion: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="柔化"
+                    valueDisplay={settings.warpSoftness.toFixed(2)}
+                    value={[settings.warpSoftness]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, warpSoftness: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="旋涡迭代"
+                    valueDisplay={settings.warpSwirlIterations.toString()}
+                    value={[settings.warpSwirlIterations]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, warpSwirlIterations: v }))}
+                    min={0}
+                    max={20}
+                    step={1}
+                  />
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <Label className="text-[10px] text-gray-400">形状</Label>
+                      <span className="text-[9px] uppercase tabular-nums text-gray-400">
+                        {settings.warpShape}
+                      </span>
                     </div>
-                )}
+                    <Select
+                      value={settings.warpShape}
+                      onValueChange={(value: any) =>
+                        setSettings((p) => ({ ...p, warpShape: value }))
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-full border-gray-100 bg-gray-50/50 text-[10px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="checks">Checks</SelectItem>
+                        <SelectItem value="stripes">Stripes</SelectItem>
+                        <SelectItem value="edge">Edge</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <CompactSlider
+                    label="形状比例"
+                    valueDisplay={settings.warpShapeScale.toFixed(2)}
+                    value={[settings.warpShapeScale]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, warpShapeScale: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </>
+              )}
 
-                {settings.backgroundType === "grain-gradient" && (
-                    <>
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center px-1">
-                                <Label className="text-[10px] text-gray-400">形状</Label>
-                                <span className="text-[9px] tabular-nums text-gray-400 uppercase">{settings.grainShape}</span>
-                            </div>
-                            <Select
-                                value={settings.grainShape}
-                                onValueChange={(value: any) => setSettings(p => ({ ...p, grainShape: value }))}
-                            >
-                                <SelectTrigger className="w-full bg-gray-50/50 border-gray-100 h-8 text-[10px]">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="wave">Wave</SelectItem>
-                                    <SelectItem value="dots">Dots</SelectItem>
-                                    <SelectItem value="truchet">Truchet</SelectItem>
-                                    <SelectItem value="corners">Corners</SelectItem>
-                                    <SelectItem value="ripple">Ripple</SelectItem>
-                                    <SelectItem value="blob">Blob</SelectItem>
-                                    <SelectItem value="sphere">Sphere</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <CompactSlider
-                            label="柔化"
-                            valueDisplay={settings.grainSoftness.toFixed(2)}
-                            value={[settings.grainSoftness]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, grainSoftness: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                        <CompactSlider
-                            label="强度"
-                            valueDisplay={settings.grainIntensity.toFixed(2)}
-                            value={[settings.grainIntensity]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, grainIntensity: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                        <CompactSlider
-                            label="噪点"
-                            valueDisplay={settings.grainNoise.toFixed(2)}
-                            value={[settings.grainNoise]}
-                            onValueChange={([v]) => setSettings(p => ({ ...p, grainNoise: v }))}
-                            min={0}
-                            max={1}
-                            step={0.01}
-                        />
-                    </>
-                )}
-              </div>
+              {settings.backgroundType === "noise" && (
+                <>
+                  <CompactSlider
+                    label="步数"
+                    valueDisplay={settings.noiseSteps.toString()}
+                    value={[settings.noiseSteps]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, noiseSteps: v }))}
+                    min={1}
+                    max={5}
+                    step={1}
+                  />
+                  <CompactSlider
+                    label="柔化"
+                    valueDisplay={settings.noiseSoftness.toFixed(2)}
+                    value={[settings.noiseSoftness]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, noiseSoftness: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </>
+              )}
 
-              <div className="space-y-3">
-                 <p className="text-[9px] text-gray-400 px-1 text-center">色彩配置 (AI 同步或预设)</p>
-                 <div className="flex flex-wrap gap-2 px-1 justify-center">
-                    {(aiColors.length > 0 ? aiColors : solidColorPresets.slice(0, 8).map(p => p.color)).map((color, i) => (
-                        <div
-                            key={i}
-                            className="w-5 h-5 rounded-full border border-gray-100 shadow-sm"
-                            style={{ backgroundColor: color }}
+              {settings.backgroundType === "voronoi" && (
+                <>
+                  <CompactSlider
+                    label="步数"
+                    valueDisplay={settings.voronoiSteps.toString()}
+                    value={[settings.voronoiSteps]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, voronoiSteps: v }))}
+                    min={1}
+                    max={10}
+                    step={1}
+                  />
+                  <CompactSlider
+                    label="扭曲"
+                    valueDisplay={settings.voronoiDistortion.toFixed(2)}
+                    value={[settings.voronoiDistortion]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, voronoiDistortion: v }))}
+                    min={0}
+                    max={2}
+                    step={0.1}
+                  />
+                  <CompactSlider
+                    label="间隙"
+                    valueDisplay={settings.voronoiGap.toFixed(2)}
+                    value={[settings.voronoiGap]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, voronoiGap: v }))}
+                    min={0}
+                    max={0.5}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="发光"
+                    valueDisplay={settings.voronoiGlow.toFixed(2)}
+                    value={[settings.voronoiGlow]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, voronoiGlow: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <div className="grid grid-cols-2 gap-3 pt-2">
+                    <div className="space-y-2">
+                      <Label className="text-[10px] text-gray-400">发光色</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="color"
+                          value={settings.voronoiGlowColor}
+                          onChange={(e) =>
+                            setSettings((p) => ({
+                              ...p,
+                              voronoiGlowColor: e.target.value,
+                            }))
+                          }
+                          className="h-6 w-6 border-none bg-transparent p-0"
                         />
-                    ))}
-                 </div>
-                 <p className="text-[9px] text-gray-600/60 italic leading-relaxed px-1 text-center">
-                    使用上方“同步 AI 色彩”将截图氛围注入着色器
-                 </p>
+                        <Input
+                          type="text"
+                          value={settings.voronoiGlowColor}
+                          onChange={(e) =>
+                            setSettings((p) => ({
+                              ...p,
+                              voronoiGlowColor: e.target.value,
+                            }))
+                          }
+                          className="h-7 flex-1 border-gray-100 bg-gray-50/50 text-[9px]"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] text-gray-400">间隙色</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="color"
+                          value={settings.voronoiGapColor}
+                          onChange={(e) =>
+                            setSettings((p) => ({
+                              ...p,
+                              voronoiGapColor: e.target.value,
+                            }))
+                          }
+                          className="h-6 w-6 border-none bg-transparent p-0"
+                        />
+                        <Input
+                          type="text"
+                          value={settings.voronoiGapColor}
+                          onChange={(e) =>
+                            setSettings((p) => ({
+                              ...p,
+                              voronoiGapColor: e.target.value,
+                            }))
+                          }
+                          className="h-7 flex-1 border-gray-100 bg-gray-50/50 text-[9px]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {(settings.backgroundType === "dot-orbit" ||
+                settings.backgroundType === "grain-gradient" ||
+                settings.backgroundType === "smoke-ring") && (
+                <div className="space-y-2 pt-2">
+                  <Label className="text-[10px] text-gray-400">底色 (Background)</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="color"
+                      value={settings.shaderColorBack}
+                      onChange={(e) =>
+                        setSettings((p) => ({
+                          ...p,
+                          shaderColorBack: e.target.value,
+                        }))
+                      }
+                      className="h-8 w-8 border-none bg-transparent p-0"
+                    />
+                    <Input
+                      type="text"
+                      value={settings.shaderColorBack}
+                      onChange={(e) =>
+                        setSettings((p) => ({
+                          ...p,
+                          shaderColorBack: e.target.value,
+                        }))
+                      }
+                      className="h-8 flex-1 border-gray-100 bg-gray-50/50 text-[10px]"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {settings.backgroundType === "grain-gradient" && (
+                <>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <Label className="text-[10px] text-gray-400">形状</Label>
+                      <span className="text-[9px] uppercase tabular-nums text-gray-400">
+                        {settings.grainShape}
+                      </span>
+                    </div>
+                    <Select
+                      value={settings.grainShape}
+                      onValueChange={(value: any) =>
+                        setSettings((p) => ({ ...p, grainShape: value }))
+                      }
+                    >
+                      <SelectTrigger className="h-8 w-full border-gray-100 bg-gray-50/50 text-[10px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="wave">Wave</SelectItem>
+                        <SelectItem value="dots">Dots</SelectItem>
+                        <SelectItem value="truchet">Truchet</SelectItem>
+                        <SelectItem value="corners">Corners</SelectItem>
+                        <SelectItem value="ripple">Ripple</SelectItem>
+                        <SelectItem value="blob">Blob</SelectItem>
+                        <SelectItem value="sphere">Sphere</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <CompactSlider
+                    label="柔化"
+                    valueDisplay={settings.grainSoftness.toFixed(2)}
+                    value={[settings.grainSoftness]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, grainSoftness: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="强度"
+                    valueDisplay={settings.grainIntensity.toFixed(2)}
+                    value={[settings.grainIntensity]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, grainIntensity: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                  <CompactSlider
+                    label="噪点"
+                    valueDisplay={settings.grainNoise.toFixed(2)}
+                    value={[settings.grainNoise]}
+                    onValueChange={([v]) => setSettings((p) => ({ ...p, grainNoise: v }))}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                  />
+                </>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <p className="px-1 text-center text-[9px] text-gray-400">色彩配置 (AI 同步或预设)</p>
+              <div className="flex flex-wrap justify-center gap-2 px-1">
+                {(aiColors.length > 0
+                  ? aiColors
+                  : solidColorPresets.slice(0, 8).map((p) => p.color)
+                ).map((color, i) => (
+                  <div
+                    key={i}
+                    className="h-5 w-5 rounded-full border border-gray-100 shadow-sm"
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
               </div>
+              <p className="px-1 text-center text-[9px] italic leading-relaxed text-gray-600/60">
+                使用上方“同步 AI 色彩”将截图氛围注入着色器
+              </p>
+            </div>
           </div>
         )}
 
         {settings.backgroundType === "mesh" && (
           <div className="space-y-6 animate-in fade-in slide-in-from-top-2">
-             <div className="flex justify-between items-center px-1">
-                <Label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">弥散质感</Label>
-                <div className="flex gap-2">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={async () => {
-                            await extractAllFromImage();
-                        }}
-                        disabled={isExtracting || isAutoExtracting || !image}
-                        className="h-6 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50 gap-1"
-                    >
-                        {isExtracting || isAutoExtracting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                        AI 提取
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSettings(prev => ({ ...prev, meshSeed: prev.meshSeed + 1 }))}
-                        className="h-6 px-1.5 text-[9px] text-gray-400 hover:bg-gray-100 gap-1"
-                    >
-                        <Dices className="w-3 h-3" />
-                        随机
-                    </Button>
-                </div>
+            <div className="flex items-center justify-between px-1">
+              <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                弥散质感
+              </Label>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    await extractAllFromImage();
+                  }}
+                  disabled={isExtracting || isAutoExtracting || !image}
+                  className="h-6 gap-1 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50"
+                >
+                  {isExtracting || isAutoExtracting ? (
+                    <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-3 w-3" />
+                  )}
+                  AI 提取
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      meshSeed: prev.meshSeed + 1,
+                    }))
+                  }
+                  className="h-6 gap-1 px-1.5 text-[9px] text-gray-400 hover:bg-gray-100"
+                >
+                  <Dices className="h-3 w-3" />
+                  随机
+                </Button>
               </div>
-            
-            <div className="grid grid-cols-5 gap-2.5 min-h-[32px]">
+            </div>
+
+            <div className="grid min-h-[32px] grid-cols-5 gap-2.5">
               {solidColorPresets.map((preset, index) => (
                 <button
                   key={index}
-                  onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: preset.color }))}
-                  className={`w-full aspect-square rounded-full border-2 transition-all hover:scale-110 active:scale-95 ${
-                    settings.backgroundColor === preset.color? "border-orange-500 ring-2 ring-orange-500/20" : "border-transparent"
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      backgroundColor: preset.color,
+                    }))
+                  }
+                  className={`aspect-square w-full rounded-full border-2 transition-all hover:scale-110 active:scale-95 ${
+                    settings.backgroundColor === preset.color
+                      ? "border-orange-500 ring-2 ring-orange-500/20"
+                      : "border-transparent"
                   }`}
                   style={{ backgroundColor: preset.color }}
                   title={preset.name}
@@ -801,30 +955,32 @@ export const SettingsPanel = ({
 
             {/* Mesh Specific Colors (AI/Results) */}
             {aiColors.length > 0 && (
-                <div className="pt-2 border-t border-gray-50">
-                    <p className="text-[9px] text-gray-400 mb-2 px-1">AI 建议色彩库</p>
-                    <div className="flex flex-wrap gap-2">
-                        {aiColors.map((color, i) => (
-                            <div
-                                key={i}
-                                className="w-4 h-4 rounded-full border border-gray-100"
-                                style={{ backgroundColor: color }}
-                            />
-                        ))}
-                        <Button
-                            variant="link"
-                            className="h-4 p-0 text-[9px] text-orange-500"
-                            onClick={() => setSettings(p => ({ ...p, meshColors: aiColors }))}
-                        >
-                            应用到渐变
-                        </Button>
-                    </div>
+              <div className="border-t border-gray-50 pt-2">
+                <p className="mb-2 px-1 text-[9px] text-gray-400">AI 建议色彩库</p>
+                <div className="flex flex-wrap gap-2">
+                  {aiColors.map((color, i) => (
+                    <div
+                      key={i}
+                      className="h-4 w-4 rounded-full border border-gray-100"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                  <Button
+                    variant="link"
+                    className="h-4 p-0 text-[9px] text-orange-500"
+                    onClick={() => setSettings((p) => ({ ...p, meshColors: aiColors }))}
+                  >
+                    应用到渐变
+                  </Button>
                 </div>
+              </div>
             )}
 
-            <div className="bg-gradient-to-br from-orange-50/50 to-amber-50/50 p-4 rounded-2xl border border-orange-100/50 flex flex-col items-center gap-2">
-              <p className="text-[10px] text-amber-700/60 font-medium leading-relaxed text-center">
-                磨砂层已叠加 3% 的艺术噪点<br/>以实现电影级的背景平滑度
+            <div className="flex flex-col items-center gap-2 rounded-2xl border border-orange-100/50 bg-gradient-to-br from-orange-50/50 to-amber-50/50 p-4">
+              <p className="text-center text-[10px] font-medium leading-relaxed text-amber-700/60">
+                磨砂层已叠加 3% 的艺术噪点
+                <br />
+                以实现电影级的背景平滑度
               </p>
             </div>
           </div>
@@ -836,9 +992,16 @@ export const SettingsPanel = ({
               {patternPresets.map((preset, index) => (
                 <button
                   key={index}
-                  onClick={() => setSettings((prev) => ({ ...prev, backgroundColor: preset.color }))}
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      backgroundColor: preset.color,
+                    }))
+                  }
                   className={`h-12 rounded-xl border-2 text-[11px] font-bold transition-all ${
-                    settings.backgroundColor === preset.color ? "border-orange-500 bg-orange-50 text-orange-600" : "border-gray-100 bg-gray-50 text-gray-400"
+                    settings.backgroundColor === preset.color
+                      ? "border-orange-500 bg-orange-50 text-orange-600"
+                      : "border-gray-100 bg-gray-50 text-gray-400"
                   }`}
                 >
                   {preset.name}
@@ -854,12 +1017,23 @@ export const SettingsPanel = ({
               {wallpaperPresets.map((preset, index) => (
                 <button
                   key={index}
-                  onClick={() => setSettings((prev) => ({ ...prev, wallpaperUrl: preset.url }))}
-                  className={`aspect-[16/10] rounded-lg border-2 overflow-hidden transition-all hover:scale-[1.02] ${
-                    settings.wallpaperUrl === preset.url ? "border-orange-500 ring-2 ring-orange-500/20" : "border-gray-100"
+                  onClick={() =>
+                    setSettings((prev) => ({
+                      ...prev,
+                      wallpaperUrl: preset.url,
+                    }))
+                  }
+                  className={`aspect-[16/10] overflow-hidden rounded-lg border-2 transition-all hover:scale-[1.02] ${
+                    settings.wallpaperUrl === preset.url
+                      ? "border-orange-500 ring-2 ring-orange-500/20"
+                      : "border-gray-100"
                   }`}
                 >
-                  <img src={preset.thumbnail || "/placeholder.svg"} alt={preset.name} className="w-full h-full object-cover" />
+                  <img
+                    src={preset.thumbnail || "/placeholder.svg"}
+                    alt={preset.name}
+                    className="h-full w-full object-cover"
+                  />
                 </button>
               ))}
             </div>
@@ -867,18 +1041,26 @@ export const SettingsPanel = ({
               variant="outline"
               size="sm"
               onClick={() => wallpaperInputRef.current?.click()}
-              className="w-full h-10 text-xs border-dashed text-gray-500 hover:text-orange-500 hover:border-orange-300"
+              className="h-10 w-full border-dashed text-xs text-gray-500 hover:border-orange-300 hover:text-orange-500"
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               上传自定义壁纸
             </Button>
-            <input ref={wallpaperInputRef} type="file" accept="image/*" onChange={handleWallpaperUpload} className="hidden" />
+            <input
+              ref={wallpaperInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleWallpaperUpload}
+              className="hidden"
+            />
           </div>
         )}
 
         {/* Style Controls */}
-        <section className="space-y-6 pt-6 border-t border-gray-50">
-          <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">截图样式</Label>
+        <section className="space-y-6 border-t border-gray-50 pt-6">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            截图样式
+          </Label>
 
           <div className="space-y-3">
             <CompactSlider
@@ -921,15 +1103,17 @@ export const SettingsPanel = ({
         </section>
 
         {/* Browser Style */}
-        <section className="space-y-3 pt-6 border-t border-gray-50 pb-8">
-          <Label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">外观装饰</Label>
+        <section className="space-y-3 border-t border-gray-50 pb-8 pt-6">
+          <Label className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            外观装饰
+          </Label>
           <Select
             value={settings.browserStyle}
             onValueChange={(value: "none" | "chrome" | "safari") =>
               setSettings((prev) => ({ ...prev, browserStyle: value }))
             }
           >
-            <SelectTrigger className="w-full bg-gray-50/50 border-gray-100 h-10 text-sm">
+            <SelectTrigger className="h-10 w-full border-gray-100 bg-gray-50/50 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -942,4 +1126,4 @@ export const SettingsPanel = ({
       </div>
     </div>
   );
-}; 
+};

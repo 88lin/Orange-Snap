@@ -1,6 +1,15 @@
 "use client";
 
-import { MeshGradient, DotOrbit, SimplexNoise, Voronoi, GrainGradient, Warp, StaticMeshGradient, SmokeRing } from "@paper-design/shaders-react";
+import {
+  MeshGradient,
+  DotOrbit,
+  SimplexNoise,
+  Voronoi,
+  GrainGradient,
+  Warp,
+  StaticMeshGradient,
+  SmokeRing,
+} from "@paper-design/shaders-react";
 import { ImageSettings } from "./types";
 import { useMemo } from "react";
 
@@ -11,7 +20,12 @@ interface PaperBackgroundProps {
 
 export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) => {
   const colors = useMemo(() => {
-    const targetCount = (settings.backgroundType === "noise" || settings.backgroundType === "voronoi" || settings.backgroundType === "grain-gradient") ? 5 : 4;
+    const targetCount =
+      settings.backgroundType === "noise" ||
+      settings.backgroundType === "voronoi" ||
+      settings.backgroundType === "grain-gradient"
+        ? 5
+        : 4;
     if (aiColors.length >= targetCount) return aiColors.slice(0, targetCount);
     if (aiColors.length > 0) {
       // Pad with existing colors if we have some but less than target
@@ -27,7 +41,7 @@ export const PaperBackground = ({ settings, aiColors }: PaperBackgroundProps) =>
   }, [aiColors, settings.backgroundType]);
 
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+    <div className="pointer-events-none absolute inset-0 h-full w-full overflow-hidden">
       {settings.backgroundType === "paper-mesh" && (
         <MeshGradient
           colors={colors}

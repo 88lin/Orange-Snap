@@ -37,16 +37,15 @@ export function ScreenshotBeautifier() {
   // 触发文件选择
   const triggerFileSelection = useCallback(() => {
     // 创建一个新的文件输入元素动态确保它可以正常工作
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
     input.onchange = (e: any) => {
       const file = e.target.files?.[0];
       if (file && file.type.startsWith("image/")) {
         const img = new Image();
         img.onload = () => setImage(img);
         img.src = URL.createObjectURL(file);
-        
       }
     };
     // 触发点击打开文件对话框
@@ -64,20 +63,20 @@ export function ScreenshotBeautifier() {
     const autoExtract = async () => {
       if (!image) return;
       setIsAutoExtracting(true);
-      
+
       const service = new ColorExtractionService();
-      
+
       try {
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = image.width;
         canvas.height = image.height;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         ctx?.drawImage(image, 0, 0);
-        
+
         const blob = await new Promise<Blob>((resolve) =>
-          canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.8)
+          canvas.toBlob((blob) => resolve(blob!), "image/jpeg", 0.8),
         );
-        const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+        const file = new File([blob], "image.jpg", { type: "image/jpeg" });
 
         const { colors, gradients } = await service.extractAll(file);
 
@@ -85,12 +84,12 @@ export function ScreenshotBeautifier() {
         setAiGradients(gradients);
 
         // Auto-populate backgrounds if they are matching defaults or empty
-        setSettings(prev => ({
-            ...prev,
-            backgroundColor: colors[0] || prev.backgroundColor,
-            gradientStart: gradients[0]?.start || prev.gradientStart,
-            gradientEnd: gradients[0]?.end || prev.gradientEnd,
-            meshColors: colors.slice(0, 5)
+        setSettings((prev) => ({
+          ...prev,
+          backgroundColor: colors[0] || prev.backgroundColor,
+          gradientStart: gradients[0]?.start || prev.gradientStart,
+          gradientEnd: gradients[0]?.end || prev.gradientEnd,
+          meshColors: colors.slice(0, 5),
         }));
       } catch (err) {
         console.warn("Auto-extraction failed (Key might be missing):", err);
@@ -103,24 +102,24 @@ export function ScreenshotBeautifier() {
   }, [image]);
 
   return (
-    <div className="h-screen w-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 overflow-hidden flex flex-col">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50">
       {/* Top Header / Nav */}
-      <header className="h-16 border-b border-orange-100/40 bg-white/60 backdrop-blur-2xl px-8 flex items-center justify-between z-30 shrink-0">
+      <header className="z-30 flex h-16 shrink-0 items-center justify-between border-b border-orange-100/40 bg-white/60 px-8 backdrop-blur-2xl">
         <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-md overflow-hidden bg-orange-500">
-            <img src="favicon.png" className="w-full h-full object-contain" alt="logo" />
+          <div className="h-7 w-7 overflow-hidden rounded-md bg-orange-500">
+            <img src="favicon.png" className="h-full w-full object-contain" alt="logo" />
           </div>
-          <h1 className="text-lg font-semibold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+          <h1 className="bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-lg font-semibold text-transparent">
             Orange Snap
           </h1>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <a
             href="https://github.com/zhiyu1998/Orange-Snap"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-50"
+            className="rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
             title="View on GitHub"
           >
             <Github size={20} />
@@ -129,18 +128,14 @@ export function ScreenshotBeautifier() {
       </header>
 
       {/* Main Workspace */}
-      <main className="flex flex-1 overflow-hidden relative">
+      <main className="relative flex flex-1 overflow-hidden">
         {/* Left Toolbar (Perspective) */}
-        <aside className="w-72 m-4 mr-0 rounded-[32px] border border-orange-100/30 bg-white/60 backdrop-blur-2xl shadow-2xl shadow-orange-900/5 flex flex-col shrink-0 z-20 overflow-hidden">
-          <PerspectivePanel
-            settings={settings}
-            setSettings={setSettings}
-            image={image}
-          />
+        <aside className="z-20 m-4 mr-0 flex w-72 shrink-0 flex-col overflow-hidden rounded-[32px] border border-orange-100/30 bg-white/60 shadow-2xl shadow-orange-900/5 backdrop-blur-2xl">
+          <PerspectivePanel settings={settings} setSettings={setSettings} image={image} />
         </aside>
 
         {/* Center Canvas Area (Infinite Workspace) */}
-        <section className="flex-1 relative overflow-auto p-12 flex items-center justify-center custom-scrollbar">
+        <section className="custom-scrollbar relative flex flex-1 items-center justify-center overflow-auto p-12">
           <ImagePreview
             image={image}
             canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
@@ -152,7 +147,7 @@ export function ScreenshotBeautifier() {
         </section>
 
         {/* Right Inspector (Settings) */}
-        <aside className="w-80 m-4 ml-0 rounded-[32px] border border-orange-100/30 bg-white/60 backdrop-blur-2xl shadow-2xl shadow-orange-900/5 flex flex-col shrink-0 z-20 overflow-y-auto custom-scrollbar overflow-hidden">
+        <aside className="custom-scrollbar z-20 m-4 ml-0 flex w-80 shrink-0 flex-col overflow-hidden overflow-y-auto rounded-[32px] border border-orange-100/30 bg-white/60 shadow-2xl shadow-orange-900/5 backdrop-blur-2xl">
           <SettingsPanel
             settings={settings}
             setSettings={setSettings}
@@ -166,7 +161,6 @@ export function ScreenshotBeautifier() {
           />
         </aside>
       </main>
-
     </div>
   );
-} 
+}
