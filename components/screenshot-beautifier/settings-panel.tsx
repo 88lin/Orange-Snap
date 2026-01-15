@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ColorExtractionService } from "@/lib/color-extraction-service";
-import { Dices, Loader2, Plus, RotateCcw, Sparkles } from "lucide-react";
+import { Dices, Loader2, Plus, RotateCcw, Shuffle, Sparkles } from "lucide-react";
 import { useRef, useState } from "react";
 import { CompactSlider } from "./compact-slider";
 import {
@@ -61,6 +61,21 @@ export const SettingsPanel = ({
 
   const resetSettings = () => {
     setSettings(defaultSettings);
+  };
+
+  const shuffleColors = () => {
+    if (aiColors.length < 2) return;
+    const shuffled = [...aiColors];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    setAiColors(shuffled);
+
+    // If we are in mesh mode, also sync the shuffled colors to the mesh state
+    if (settings.backgroundType === "mesh") {
+      setSettings((p) => ({ ...p, meshColors: shuffled.slice(0, 5) }));
+    }
   };
 
   const extractAllFromImage = async () => {
@@ -381,22 +396,35 @@ export const SettingsPanel = ({
               <Label className="text-center text-[10px] font-bold uppercase tracking-widest text-gray-400">
                 高级着色器控制
               </Label>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={async () => {
-                  await extractAllFromImage();
-                }}
-                disabled={isExtracting || isAutoExtracting || !image}
-                className="h-6 gap-1 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50"
-              >
-                {isExtracting || isAutoExtracting ? (
-                  <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                ) : (
-                  <Sparkles className="h-3 w-3" />
-                )}
-                同步 AI 色彩
-              </Button>
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={shuffleColors}
+                  disabled={aiColors.length < 2 || isExtracting || isAutoExtracting}
+                  className="h-6 gap-1 px-1.5 text-[9px] text-gray-500 hover:bg-gray-100"
+                  title="改变颜色顺序"
+                >
+                  <Shuffle className="h-3 w-3" />
+                  改变顺序
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    await extractAllFromImage();
+                  }}
+                  disabled={isExtracting || isAutoExtracting || !image}
+                  className="h-6 gap-1 px-1.5 text-[9px] text-orange-500 hover:bg-orange-50"
+                >
+                  {isExtracting || isAutoExtracting ? (
+                    <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-3 w-3" />
+                  )}
+                  同步 AI 色彩
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-3">
@@ -898,7 +926,18 @@ export const SettingsPanel = ({
               <Label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
                 弥散质感
               </Label>
-              <div className="flex gap-2">
+              <div className="flex gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={shuffleColors}
+                  disabled={aiColors.length < 2 || isExtracting || isAutoExtracting}
+                  className="h-6 gap-1 px-1.5 text-[9px] text-gray-500 hover:bg-gray-100"
+                  title="改变颜色顺序"
+                >
+                  <Shuffle className="h-3 w-3" />
+                  改变顺序
+                </Button>
                 <Button
                   variant="ghost"
                   size="sm"

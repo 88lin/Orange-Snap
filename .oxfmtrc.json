@@ -13,7 +13,9 @@
     "next-env.d.ts",
     ".claude/**",
     "plan.md",
-    "CLAUDE.md"
+    "CLAUDE.md",
+    "pnpm-lock.yaml",
+    ".vscode/**"
   ],
   "experimentalSortPackageJson": true,
   "experimentalTailwindcss": {
